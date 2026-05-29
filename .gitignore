@@ -1,5 +1,30 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
+*.py.class
+*.egg-info/
+
+# Editor
 .vscode/
 .idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+*.log.*
+
+# Temp
+/tmp/
+tmp/
+
+# Writeups (keep local only - never push)
+solution/
+
+# Sensitive local configs (if any)
+*.secret
