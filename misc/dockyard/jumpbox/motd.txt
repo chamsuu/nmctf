@@ -1,0 +1,27 @@
+
+    ╔══════════════════════════════════════════════════════════╗
+    ║                                                          ║
+    ║     ██████╗  ██████╗  ██████╗██╗  ██╗██╗   ██╗ █████╗   ║
+    ║     ██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝╚██╗ ██╔╝██╔══██╗  ║
+    ║     ██║  ██║██║   ██║██║     █████╔╝  ╚████╔╝ ███████║  ║
+    ║     ██║  ██║██║   ██║██║     ██╔═██╗   ╚██╔╝  ██╔══██║  ║
+    ║     ██████╔╝╚██████╔╝╚██████╗██║  ██╗   ██║   ██║  ██║  ║
+    ║     ╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝  ║
+    ║                                                          ║
+    ║       ALGERIAN DEVS — Internal Developer Workspace       ║
+    ║                                                          ║
+    ╠══════════════════════════════════════════════════════════╣
+    ║                                                          ║
+    ║  This workspace belongs to systems engineer 4mdj4d.      ║
+    ║  The production build systems are currently undergoing   ║
+    ║  active internal deployment and verification.            ║
+    ║                                                          ║
+    ║  Target: Find the flag hidden inside the highly secure   ║
+    ║          isolated container network.                     ║
+    ║                                                          ║
+    ║  Your environment tools: curl, nslookup, nmap, nc, jq    ║
+    ║                                                          ║
+    ║  Good luck.                                              ║
+    ║                                                          ║
+    ╚══════════════════════════════════════════════════════════╝
+

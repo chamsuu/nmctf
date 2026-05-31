@@ -1,0 +1,7 @@
+Started by user admin
+Running as SYSTEM
+
++ docker run -d --name secure-vault --secret audit_token alpine:3.19 tail -f /dev/null
+a3f8c9e2b1d4
+
+Finished: SUCCESS

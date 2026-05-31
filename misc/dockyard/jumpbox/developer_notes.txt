@@ -1,0 +1,5 @@
+Hey Karim,
+Vault container is live. Secret's loaded via Docker secrets as discussed. Jenkins is great !
+, I removed the docker binary from it  so interns can't mess with production containers again (remember last Thursday? lol)
+Creds are still the temp ones: admin / 4mdj4d_dz_sec_2026
+I'll rotate them after the audit. Don't remind me.

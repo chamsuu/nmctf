@@ -1,0 +1,86 @@
+version: "3.8"
+
+# ============================================================
+#  ALGERIAN DEVS — CTF Challenge Infrastructure (Hardened)
+# ============================================================
+#  Created by: 4mdj4d
+#  Theme: Sandboxed Docker Socket Abuse via Jenkins Pipeline
+# ============================================================
+
+services:
+  # ── Player Entry Bastion (SSH Enabled) ──────────────────────
+  # Attached to public-net for SSH access, and isolated-net for pivoting.
+  jumpbox:
+    build: ./jumpbox
+    container_name: jumpbox
+    hostname: jumpbox
+    ports:
+      - "2222:22"  # Maps container port 22 to VPS host port 2222 (which matches the VPS port-forwarding rule to external 9134)
+    networks:
+      public-net:
+        ipv4_address: 10.27.0.10
+      isolated-net:
+        ipv4_address: 10.28.0.10
+    depends_on:
+      - jenkins
+      - dind
+    restart: unless-stopped
+
+  # ── Jenkins Automation Server (Isolated) ────────────────────
+  # Connected strictly to the isolated network (no internet).
+  # No public ports mapped - strictly accessible via SSH tunnel.
+  jenkins:
+    build: ./jenkins
+    container_name: jenkins
+    hostname: jenkins
+    volumes:
+      - docker-socket-volume:/var/run
+    networks:
+      isolated-net:
+        ipv4_address: 10.28.0.20
+    depends_on:
+      - dind
+    restart: unless-stopped
+
+  # ── Docker-in-Docker Sandbox (Daemon) ──────────────────────
+  # Hosts the nested Docker Engine where 'secure-vault' runs.
+  # Connected to the internet network to pull Alpine at startup.
+  dind:
+    build: ./dind
+    container_name: dind
+    hostname: dind
+    privileged: true
+    environment:
+      - DOCKER_TLS_CERTDIR=
+    volumes:
+      - docker-socket-volume:/var/run
+    networks:
+      internet-net:
+        ipv4_address: 10.29.0.30
+    restart: unless-stopped
+
+networks:
+  # Standard network to allow external host SSH access to the jumpbox
+  public-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.27.0.0/24
+
+  # Strict isolated network with zero outbound internet access
+  isolated-net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.28.0.0/24
+
+  # Standard network to allow dind to download base images on boot
+  internet-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.29.0.0/24
+
+volumes:
+  docker-socket-volume:
