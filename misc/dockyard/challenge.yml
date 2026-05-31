@@ -1,0 +1,6 @@
+name: "DOCKYARD"
+category: "Misc"
+description: "We’ve successfully compromised a low-privilege developer bastion inside the Algerian Devs internal network. Their systems engineer has no idea we are here. He forgot to clean up the cached developer notes in this workspace. Look closely at what he left behind, hijack their internal automation servers, and plunder the secure vault."
+difficulty: "Medium"
+author: "4mdj4d"
+type: "dynamic"
