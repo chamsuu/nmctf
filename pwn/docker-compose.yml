@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   01-entry-gate:
-    build: ./challenges/01-entry-gate
+    build: .//01-entry-gate
     image: pixelvault/entry-gate:latest
     container_name: challenge-01-entry-gate
     ports:
@@ -14,7 +14,7 @@ services:
       - /tmp
 
   02-token-terminal:
-    build: ./challenges/02-token-terminal
+    build: ./02-token-terminal
     image: pixelvault/token-terminal:latest
     container_name: challenge-02-token-terminal
     ports:
@@ -24,7 +24,7 @@ services:
     cpus: 0.5
 
   03-staff-chat:
-    build: ./challenges/03-staff-chat
+    build: ./03-staff-chat
     image: pixelvault/staff-chat:latest
     container_name: challenge-03-staff-chat
     ports:
@@ -34,7 +34,7 @@ services:
     cpus: 0.5
 
   04-power-grid:
-    build: ./challenges/04-power-grid
+    build: ./04-power-grid
     image: pixelvault/power-grid:latest
     container_name: challenge-04-power-grid
     ports:
@@ -44,7 +44,7 @@ services:
     cpus: 1.0
 
   05-vault-driver:
-    build: ./challenges/05-vault-driver
+    build: ./05-vault-driver
     image: pixelvault/vault-driver:latest
     container_name: challenge-05-vault-driver
     privileged: true
