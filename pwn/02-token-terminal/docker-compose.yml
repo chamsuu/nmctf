@@ -1,0 +1,10 @@
+services:
+  token-terminal:
+    build: .
+    image: pixelvault/token-terminal:latest
+    container_name: challenge-02-token-terminal
+    ports:
+      - "13372:1337"
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5

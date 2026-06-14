@@ -1,0 +1,10 @@
+services:
+  entry-gate:
+    build: .
+    image: pixelvault/entry-gate:latest
+    container_name: challenge-01-entry-gate
+    ports:
+      - "13371:1337"
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5

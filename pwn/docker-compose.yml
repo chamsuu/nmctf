@@ -1,0 +1,57 @@
+version: "3.8"
+services:
+  01-entry-gate:
+    build: ./challenges/01-entry-gate
+    image: pixelvault/entry-gate:latest
+    container_name: challenge-01-entry-gate
+    ports:
+      - "13371:1337"
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
+    read_only: true
+    tmpfs:
+      - /tmp
+
+  02-token-terminal:
+    build: ./challenges/02-token-terminal
+    image: pixelvault/token-terminal:latest
+    container_name: challenge-02-token-terminal
+    ports:
+      - "13372:1337"
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
+
+  03-staff-chat:
+    build: ./challenges/03-staff-chat
+    image: pixelvault/staff-chat:latest
+    container_name: challenge-03-staff-chat
+    ports:
+      - "13373:1337"
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
+
+  04-power-grid:
+    build: ./challenges/04-power-grid
+    image: pixelvault/power-grid:latest
+    container_name: challenge-04-power-grid
+    ports:
+      - "13374:1337"
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: 1.0
+
+  05-vault-driver:
+    build: ./challenges/05-vault-driver
+    image: pixelvault/vault-driver:latest
+    container_name: challenge-05-vault-driver
+    privileged: true
+    devices:
+      - /dev/kvm:/dev/kvm
+    ports:
+      - "13375:1337"
+    restart: unless-stopped
+    mem_limit: 1g
+    cpus: 2.0
