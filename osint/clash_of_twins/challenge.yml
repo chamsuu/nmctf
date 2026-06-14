@@ -1,0 +1,20 @@
+name: "Clash of Twins"
+category: Osint
+description: The underground elite have many secrets, and their empires often overlap in the shadows. We’ve been mapping the networks of two notorious figures: Jeffrey Epstein and P. Diddy. While they seemingly ruled different social spheres, one anomaly appeared in the data: a high-profile supermodel who seamlessly navigated the inner circles of both men.
+ Your objective is to  identify this target, and dig into her digital footprint to uncover two highly specific pieces of intel:
+ She is associated with a highly unusual, architecturally "bizarre" house. We need the specific number tied to this property.
+ Her inner circle isn't as tight as she thinks. Track down the private phone number that was carelessly leaked by epstine  assistant.
+ Put the pieces together to prove you've compromised her network.
+ Flag Format:nmctf{firstname-lastname_house-number_leaked-phone-number}
+difficulty: hard   
+author: L_autor / denzeno
+type: static
+extra:
+  initial: 500
+  decay: 150
+  minimum: 100
+
+flag: nmctf{naomi-campbell_110_917-400-6047}
+
+
+state: hidden
