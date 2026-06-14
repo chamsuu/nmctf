@@ -1,0 +1,16 @@
+name: Cursed Arcade
+author: 4mdj4d
+category: OSINT
+description: >
+
+  Two people died. Same game. Years apart. The cases are closed.
+
+  IntruderAlert82 was a conspiracy theorist who believed a secret cult
+
+  was operating behind it all. He was investigating. Now he's gone too.
+
+  Find the place they used to operate from.
+
+difficulty: Medium
+type: static
+flag: CTF{Westwood_College}
