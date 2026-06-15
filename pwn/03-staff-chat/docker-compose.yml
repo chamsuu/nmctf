@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  staff-chat:
+    build: .
+    image: pixelvault/staff-chat:latest
+    container_name: challenge-03-staff-chat
+    ports:
+      - "13373:1337"
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
