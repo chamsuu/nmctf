@@ -1,0 +1,16 @@
+
+name: "You"
+category: Osint
+description: i have a little mission for you. i need help investigating a suspicious couple. i managed to befriend one of them on facebook, but he did not reveal any useful information. they are involved in several crimes, and i need to identify them.your goal is to find the following details and submit them in this format:nmctf{first-name_surname_nickname_birthday_company_partner-name_nickname_birthday_relationship-anniversary}.all answers should be written in lowercase.
+difficulty: medium
+author: L_autor / denzeno
+type: static
+extra:
+  initial: 500
+  decay: 150
+  minimum: 100
+
+flag: nmctf{first-name_surname_nickname_birthday_company_partner-name_nickname_birthday_relationship-anniversary}
+
+
+state: hidden
