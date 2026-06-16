@@ -1,0 +1,17 @@
+name: "Jugurtha"
+category: misc
+description: The Roman Senate burned every scroll that told the truth of Jugurtha, the Numidian king. They thought the truth was gone forever. But the king's scribes were smarter — they hid the secrets ( in bold) .
+ The table cannot speak. It cannot print. But it listens to the Query Tongue. If you ask a true question, the spirit of Jugurtha hums with green fire. If you ask a false one, the secret shatters into red dust.
+ Your mission: reveal the true story of Jugurtha — one query at a time.
+difficulty: medium   
+author: L_autor / denzeno
+type: static
+extra:
+  initial: 500
+  decay: 150
+  minimum: 100
+
+flag: nmctf{By_H3rcul3s_H0w_C0ld_Y0ur_R0m4n_B4th_1s_!}
+
+
+state: hidden
