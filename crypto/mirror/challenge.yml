@@ -1,19 +1,16 @@
-name: Mirror
+name: Mirror Key
 author: Vuln3rat0r
 category: Crypto
-description: no description go go
+description: lwld just learnt RSA sounds good?
 value: 500
 type: standard
 state: visible
 max_attempts: 0
 flags:
-- content: nmCTF\{[^}]+\}
-  data: case_sensitive
-  type: regex
+  - nmCTF{lwld_needs_2_understand_rsa_feasibility_and_constraints_well}
 tags:
-- crypto
+  - crypto
 files:
-- dist/chall.py
-- dist/output.txt
-requirements:
-  prerequisites: []
+  - dist/chall.py
+  - dist/output.txt
+requirements: []

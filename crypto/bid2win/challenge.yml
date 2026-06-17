@@ -1,0 +1,15 @@
+name: bid2win
+author: Vuln3rat0r
+category: Crypto
+description: Welcome to the Blind Auction!  
+  Your task is to win the NPCs and get the flag.
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{th3_h1gh3st_b1d_w4s_n3v3r_th3_r34l_0n3}
+tags:
+- crypto
+files:
+- dist/chall.py
+requirements: []
