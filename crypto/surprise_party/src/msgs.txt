@@ -1,0 +1,9 @@
+Alice: are you coming tonight
+Bob: yeah i think so what time was it again
+Alice: around 8 at the same place we went to last time near the old street
+Bob: people have been acting really strange about this lately and i feel like something is being planned
+Alice: yeah nobody wants to say anything clearly and they keep avoiding the topic every time i ask
+Bob: do you think its actually a surprise or just them overcomplicating things for no reason
+Alice: nmctf{k3y_r3us3_cr1b_dr4gg3d_th3_s3cr3t}
+Bob: alright see you tonight
+
