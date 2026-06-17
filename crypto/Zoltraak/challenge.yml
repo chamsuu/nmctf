@@ -1,0 +1,15 @@
+name: Zoltraak
+author: Vuln3rat0r
+category: Crypto
+description: |-
+  A twisted Edwards curve is not a non twisted Edwards curve, but a non twisted Edwards curve is an Edwards curve ..
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{not_qu1t3_w313rstr4ss_m4th_f41l}
+tags:
+  - crypto
+files:
+  - dist/chall.py
+requirements: []
