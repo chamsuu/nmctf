@@ -1,9 +1,9 @@
 version: "3.8"
 services:
   01-entry-gate:
-    build: .//01-entry-gate
-    image: pixelvault/entry-gate:latest
-    container_name: challenge-01-entry-gate
+    build: ./01-entry-gate
+    image: pwn/entry-gate:latest
+    container_name: pwn-challenge-01-entry-gate
     ports:
       - "13371:1337"
     restart: unless-stopped
@@ -15,8 +15,8 @@ services:
 
   02-token-terminal:
     build: ./02-token-terminal
-    image: pixelvault/token-terminal:latest
-    container_name: challenge-02-token-terminal
+    image: pwn/token-terminal:latest
+    container_name: pwn-challenge-02-token-terminal
     ports:
       - "13372:1337"
     restart: unless-stopped
@@ -25,8 +25,8 @@ services:
 
   03-staff-chat:
     build: ./03-staff-chat
-    image: pixelvault/staff-chat:latest
-    container_name: challenge-03-staff-chat
+    image: pwn/staff-chat:latest
+    container_name: pwn-challenge-03-staff-chat
     ports:
       - "13373:1337"
     restart: unless-stopped
@@ -35,8 +35,8 @@ services:
 
   04-power-grid:
     build: ./04-power-grid
-    image: pixelvault/power-grid:latest
-    container_name: challenge-04-power-grid
+    image: pwn/power-grid:latest
+    container_name: pwn-challenge-04-power-grid
     ports:
       - "13374:1337"
     restart: unless-stopped
@@ -45,8 +45,8 @@ services:
 
   05-vault-driver:
     build: ./05-vault-driver
-    image: pixelvault/vault-driver:latest
-    container_name: challenge-05-vault-driver
+    image: pwn/vault-driver:latest
+    container_name: pwn-challenge-05-vault-driver
     privileged: true
     devices:
       - /dev/kvm:/dev/kvm
@@ -55,3 +55,5 @@ services:
     restart: unless-stopped
     mem_limit: 1g
     cpus: 2.0
+
+

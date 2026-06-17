@@ -6,46 +6,44 @@ BuildingOS v3.1 · Smart Arcade Complex · 5 Challenges
 
 | # | Name | Difficulty | Architecture | Port | Technique |
 |---|------|------------|--------------|------|-----------|
-| 01 | Entry Gate Firmware | Easy | ARM32 | 13371 | ARM32 ROP + Thumb |
-| 02 | Token Exchange Terminal | Medium | x86_32 | 13372 | Integer Overflow + House of Spirit |
-| 03 | Staff Chat Module | Medium | x86_64 | 13373 | UAF + XOR Encryption + Tcache |
-| 04 | Arcade Power Grid Controller | Hard | ARM64 | 13374 | Custom Canary + Stack Pivot |
-| 05 | Security Vault Driver | Hard | Kernel x86_64 | 13375 | Race Condition + Cred Overwrite |
+| 01 | Entry Gate | Easy | ARM32 | 13371 | ARM32 ROP + Thumb |
+| 02 | Token Terminal | Medium | x86_32 | 13372 | Integer Overflow + House of Spirit |
+| 03 | Staff Chat | Medium | x86_64 | 13373 | UAF + XOR Encryption + Tcache |
+| 04 | Power Grid | Hard | ARM64 | 13374 | PIE + Custom Canary + Stack Pivot |
+| 05 | Vault Driver | Hard | Kernel x86_64 | 13375 | TOCTOU Race + Cred Overwrite |
 
 ## Quick Start
 
 ```bash
 # Build all challenges
-cd challenges/01-entry-gate && make
-cd ../02-token-terminal && make
-cd ../03-staff-chat && make
-cd ../04-power-grid && make
-cd ../05-vault-driver && make
+./setup.sh
+make -C challenges/01-entry-gate
+make -C challenges/02-token-terminal
+make -C challenges/03-staff-chat
+make -C challenges/04-power-grid
+make -C challenges/05-vault-driver
 
 # Start all challenges
 docker-compose up -d
 
-# Test individual challenge
-cd challenges/01-entry-gate
-./dist/run.sh
+# Test individual challenge (e.g. 05)
+cd challenges/05-vault-driver/dist
+./run.sh
 ```
 
 ## Tool Requirements
 
-- ARM32: `arm-linux-gnueabihf-gcc`
-- ARM64: `aarch64-linux-gnu-gcc`
-- x86_32: `gcc -m32`
-- Analysis: `ropper`, `checksec`, `qemu-user-static`
+- ARM32/64: `arm-linux-gnueabihf-gcc`, `aarch64-linux-gnu-gcc`
+- x86_32: `gcc-multilib`
+- Utilities: `qemu-user-static`, `qemu-system-x86`, `socat`, `cpio`
 
 ## Challenge 05 Notes
 
-The kernel challenge requires a pre-built Linux 5.15 kernel. Place the kernel image at:
-`challenges/05-vault-driver/dist/bzImage`
-
-Build the kernel module:
+The kernel challenge requires `dist/bzImage` and a generated `dist/rootfs.cpio.gz`. 
+Build the rootfs with:
 ```bash
-cd challenges/05-vault-driver/kernel
-make -C /lib/modules/5.15.0/build M=$(pwd) modules
+cd challenges/05-vault-driver
+make rootfs
 ```
 
 ## Health Check

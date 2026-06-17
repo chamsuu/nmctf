@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  vault-driver:
+    build: .
+    image: pixelvault/vault-driver:latest
+    container_name: challenge-05-vault-driver
+    privileged: true
+    devices:
+      - /dev/kvm:/dev/kvm
+    ports:
+      - "13375:1337"
+    restart: unless-stopped
+    mem_limit: 1g
+    cpus: 2.0
