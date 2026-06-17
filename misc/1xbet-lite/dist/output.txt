@@ -1,0 +1,38 @@
+nc 0.0.0.0 777     
+== Blackjack Table ==
+
+Grow $100 into $500 and CASHOUT.
+Each hand is dealt before betting. OBSERVE is free but limited.
+REVEAL is free after a hand if you want to review the deal.
+
+== Command Menu ==
+
+Information:
+  HAND, TABLE           show the current hand and bankroll
+  HELP, ?               show this command menu
+
+Table actions:
+  OBSERVE, O            study the dealer before betting
+  REVEAL, R             reveal the hidden card after the hand ends
+
+Betting and play:
+  BET amount, B n       place a bet before playing
+  HIT, H                draw one card
+  STAND, S              keep your hand and let dealer play
+  DOUBLE, D             double your bet, draw once, then stand
+
+Round control:
+  NEW, NEXT, N          deal the next hand after a result
+  CASHOUT, C            claim the flag when bankroll reaches target
+  QUIT, Q               disconnect
+
+== Table ==
+
+Bankroll: $100 / $500    Round: 1/120    Phase: BETTING
+Player:   8H 7D          value 15
+Dealer:   5C ??          value 5+?
+Bet:      $0              Observe: 0/5
+Next:     Use OBSERVE, then BET amount.
+
+END
+
