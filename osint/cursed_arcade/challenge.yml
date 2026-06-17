@@ -10,7 +10,7 @@ description: >
   was operating behind it all. He was investigating. Now he's gone too.
 
   Find the place they used to operate from.
-
+  nmctf{place_name}
 difficulty: Medium
 type: static
-flag: CTF{Westwood_College}
+flag: CTF{westwood_college}
