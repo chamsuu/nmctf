@@ -1,1 +1,6 @@
-to do
+name: Signal Wizard
+author: gh0s7w1L
+category: Reverse Engineering
+difficulty: medium
+description: |
+  Seven signal wizards guard the final spell. The binary will not fall to ordinary input: each wizard listens for something lower-level, hidden in the way Linux processes are interrupted, watched, stopped, and awakened.
