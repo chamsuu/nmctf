@@ -1,8 +1,7 @@
 name: 1xbet lite
 author: gh0s7w1L
 category: misc
-difficulty: medium
-description: |
+description: |-
   I started a casino thinking the house always wins.
   But I noticed something strange: players who are patient and carefully time their actions always leave with big profits.
 
@@ -10,7 +9,7 @@ description: |
   `nc <host> <port>`
 value: 500
 type: standard
-connection_info: nc <host> <port>
+state: visible
 flags:
   - nmctf{bl4ckj4ck_t1m1n6_b4nkr0ll_w1ll_m4k3_y0u_r1ch}
 tags:
@@ -18,11 +17,4 @@ tags:
   - blackjack
   - casino
 files: []
-hints: []
-state: visible
-version: "0.1"
-deployment:
-  type: docker
-  image: the-blackjack:latest
-  port: 1337
-  protocol: tcp
+requirements: []
