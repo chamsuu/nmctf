@@ -1,0 +1,22 @@
+name: menuvo
+author: chamsuu
+category: Reverse
+description: |-
+  A statically-linked x86-64 ELF that implements a custom virtual machine
+  to validate a 31-character key. Recover the key by dumping the VM
+  bytecode (GDB, or see dump_bc.py) and either emulating it under a
+  symbolic-execution engine (z3 / Triton) or by tracing the CMP chains.
+  Anti-debug: the binary reads /proc/self/status and checks TracerPid.
+value: 500
+type: standard
+state: visible
+max_attempts: 0
+flags:
+  - nmctf{v1rtu4l_m4ch1n3s_4r3_fun}
+tags:
+  - reverse
+  - vm
+  - anti-debug
+files:
+  - dist/menuvo
+requirements: []

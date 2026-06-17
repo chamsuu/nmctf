@@ -1,0 +1,13 @@
+make a reverse challenge, the program is a music vault. the program holds a 
+reversing binary, and that binary is encoded as a music file. the player must 
+decode the music back into a binary, then reverse-engineer the binary to find 
+the flag.
+
+the twist: the flag is hidden behind a key derived from a forgotten musical
+score (a sequence of note names) and a Roman-numeral tempo. the binary contains
+both the real and a decoy score, and a red-herring --inspect mode that gives a
+fake flag.
+
+category: rev
+flag format: nmctf{...}
+author's flag: nmctf{m3l0dy_0f_th3_f0rg0tt3n_sc0r3}
