@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  power-grid:
+    build: .
+    image: pixelvault/power-grid:latest
+    container_name: challenge-04-power-grid
+    ports:
+      - "13374:1337"
+    restart: unless-stopped
+    mem_limit: 512m
+    cpus: 1.0

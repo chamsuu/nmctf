@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# Alternative: Run with QEMU user-mode emulation
+PORT=1337
 
-# Try qemu-arm-static first, fallback to qemu-arm
 QEMU_BIN=""
 if command -v qemu-arm-static &> /dev/null; then
     QEMU_BIN="qemu-arm-static"
@@ -13,9 +12,10 @@ else
     exit 1
 fi
 
-echo "[*] Starting challenge with QEMU ARM emulation..."
-echo "[*] Using: $QEMU_BIN"
-echo "[*] Challenge will listen on port 1337"
-echo "[*] Test with: nc localhost 1337"
-echo "[*] Press Ctrl+C to stop"
-$QEMU_BIN ./doorbell
+if ! command -v socat &> /dev/null; then
+    echo "[!] socat not found"
+    echo "[!] Install with: sudo apt-get install socat"
+    exit 1
+fi
+
+socat TCP-LISTEN:$PORT,reuseaddr,fork EXEC:"$QEMU_BIN ./doorbell"

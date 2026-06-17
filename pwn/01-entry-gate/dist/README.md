@@ -1,4 +1,4 @@
-# Entry Gate Firmware
+# Challenge 01: Entry Gate
 **Category:** PWN  
 **Difficulty:** Easy  
 **Points:** 100  
@@ -6,28 +6,17 @@
 
 ## Description
 
-Welcome to the PixelVault Entry System! As a security engineer, you need to test the firmware update mechanism for vulnerabilities.
-
-The firmware update service accepts binary payloads for processing. Your task is to find and exploit a vulnerability in the update handler.
-
-## Challenge Details
-
-- **Architecture:** ARM32 (ARMv7-A)
-- **Binary:** Static linked ARM32 executable
-- **Connection:** `nc <host> <port>`
+The entry system relies on a firmware update service. Management believes it is secure, prove them wrong.
 
 ## Files
 
-- `doorbell` - Stripped ARM32 binary
-- `run-qemu.sh` - QEMU-based local testing
+- `doorbell`: binary
+- `run-qemu.sh`: QEMU-based local testing
 
 ## Local Testing
 
-### QEMU
 ```bash
 ./run-qemu.sh
-# Challenge available at: nc localhost 1337
-# Press Ctrl+C to stop
 ```
 
 Requires QEMU ARM emulation:
