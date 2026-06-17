@@ -7,7 +7,7 @@ type: standard
 state: visible
 max_attempts: 0
 flags:
-  - nmCTF{lwld_needs_2_understand_rsa_feasibility_and_constraints_well}
+  - nmctf{lwld_needs_2_understand_rsa_feasibility_and_constraints_well}
 tags:
   - crypto
 files:
