@@ -1,0 +1,2 @@
+use movfuscator to create a binary that does some stuff with the flag, add some side channel attack vector that allows the retrieval of the flag 
+flag format : nmctf{}
