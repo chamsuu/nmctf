@@ -1,0 +1,27 @@
+name: EyeInSky
+author: Vuln3rat0r
+category: OSINT
+description: |-
+  A kidnapping has taken place near the location shown in the
+  attached photograph. The image was obtained from a witness
+  who was in the area moments before the incident occurred.
+
+  Your mission is to identify the surveillance camera that
+  may have captured the incident, and the building it is
+  mounted on.
+
+  You must determine:
+  1. The full address of the building the camera is installed on
+  2. Who operates the camera
+
+  Flag format: nmctf{Building_Address, Owner_Name}
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{Nakhodka_Pirogova_Street_16,Podryad}
+tags:
+  - osint
+files:
+  - dist/evidence.jpg
+requirements: []
