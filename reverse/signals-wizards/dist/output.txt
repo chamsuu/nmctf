@@ -1,0 +1,23 @@
+  ┌──────────────────────────────────────────┐
+  │  STAGE 1: THE SIGINT WITCH                 │
+  └──────────────────────────────────────────┘
+
+
+       .-.     Stage 1: SIGINT Witch
+      (o.o)    ~~~~~~~~~~~
+       |=|     "Your signals
+      __|__     cannot harm me!"
+     /|   |\
+    (_|   |_)
+
+  "I feed on your Ctrl+C attempts... they make me
+   stronger! But only up to a point..."
+
+  🎯 Objective: Send SIGINT (Ctrl+C) exactly 3 times to defeat her.
+
+  💡 Hint: Just press Ctrl+C three times. But watch her HP bar!
+
+  PID: 88559 — ready for SIGINT
+
+  HP: [██████████] 100%
+
