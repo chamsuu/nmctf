@@ -1,0 +1,11 @@
+name: "Jail"
+category: "misc"
+description: "just simple jail challenge"
+difficulty: "easy
+author: H4t3m
+type: "static"
+value: 500
+
+flag: "nmctf{Are_bypassing_the_blacklist_or_you_override_it}"
+files:
+  - "dist/jail.zip"
