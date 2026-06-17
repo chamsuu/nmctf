@@ -1,0 +1,12 @@
+name: "Hidden_Archive"
+category: Web
+description: No big things, just a hidden archive.
+author: H4t3m
+type: static
+value: 500
+
+connection_info: http://68.221.178.66:8000/
+files:
+- dist/L0d4shX.zip
+flag:
+ nmctf{7h1s_1s_why_y0u_7h0uld_N07_7rus7_73mpl4t3_1npu7}
