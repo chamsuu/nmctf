@@ -1,6 +1,15 @@
-name: Signal Wizard
+name: Signal Wizards
 author: gh0s7w1L
 category: Reverse Engineering
-difficulty: medium
-description: |
+description: |-
   Seven signal wizards guard the final spell. The binary will not fall to ordinary input: each wizard listens for something lower-level, hidden in the way Linux processes are interrupted, watched, stopped, and awakened.
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{b34t_w1z4rd5_4nd_pr0v3_y0ur_s1gn4l5_m4s73r_0f}
+tags:
+  - reverse_engineering
+files:
+  - dist/signal_wizards
+requirements: []
