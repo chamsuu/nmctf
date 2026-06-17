@@ -1,0 +1,6 @@
+DockerFile
+uploads/*
+getflag.py 
+*.zip
+solve
+.dockerignore
