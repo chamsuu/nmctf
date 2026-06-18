@@ -13,19 +13,13 @@
 
 ---
 
-## Narrative / Backstory
+## Description (Player-Facing)
 
-> In 2026, Numidians Corp deployed two AI voice agents — **DeepSeek** (field operative) and **Opus** (command center) — to handle secure internal communications across their infrastructure.
->
-> The agents were trained to use **Gibberlink** — an AI-to-AI audio protocol — whenever they detected another AI on the line. It was efficient. It was secret. It was not meant for human ears.
->
-> But a monitoring system captured a recording of their conversation. The audio was encrypted in sound — but the protocol is open source.
->
-> Your mission: decode the Gibberlink transmission and uncover what the agents discussed.
+> it's agents era .. ca you find the flag ??
 
 ---
 
-## Scenario
+## Scenario (for Challenge Creator)
 
 ### The Setup
 
@@ -35,22 +29,20 @@ Players receive a single file:
 whispernet_challenge.png
 ```
 
-This is a **normal-looking image** (an agent badge / logo) with a **WAV file appended** to its end. The WAV contains a Gibberlink (ggwave) audio conversation between two AI agents: **DeepSeek** and **Opus**.
-
-The image displays fine in any viewer. The appended audio is invisible to the naked eye.
+A standard image with a WAV file appended at the end. The WAV contains audio data encoded with the ggwave protocol. The image displays fine in any viewer.
 
 ### The Conversation
 
-The audio contains **6 Gibberlink bursts**, each one a "turn" in the conversation. The agents discuss **Project Nightshade** — a classified internal operation. During the exchange, they inadvertently transmit the **flag** itself.
+The audio contains **6 Gibberlink bursts** (ggwave-encoded), simulating a back-and-forth between two AI agents. The flag is embedded in one of the bursts.
 
-| Turn | Agent | Gibberlink Message |
-|---|---|---|
-| 1 | DeepSeek | `"Contact established. Project Nightshade live."` |
-| 2 | Opus | `"Acknowledged. Status report."` |
-| 3 | DeepSeek | `"All systems nominal. Flag in memory."` |
-| 4 | Opus | `"Transmit flag for verification."` |
-| 5 | DeepSeek | `"nmctf{ggw4ve_3ch0es_1n_s1l3nc3}"` |
-| 6 | Opus | `"Flag verified. Burning channel. Over."` |
+| Burst | Message |
+|---|---|
+| 1 | `"Contact established. Project Nightshade live."` |
+| 2 | `"Acknowledged. Status report."` |
+| 3 | `"All systems nominal. Flag in memory."` |
+| 4 | `"Transmit flag for verification."` |
+| 5 | `"nmctf{ggw4ve_3ch0es_1n_s1l3nc3}"` |
+| 6 | `"Flag verified. Burning channel. Over."` |
 
 Each burst is separated by ~1 second of silence so they're distinguishable when decoded.
 
@@ -120,9 +112,7 @@ The image will display normally. The WAV sits silently at the end of the file.
 Enrich the image with metadata hints:
 
 ```bash
-exiftool -Artist="DeepSeek" whispernet_challenge.png
 exiftool -Description="ggwave decode me" whispernet_challenge.png
-exiftool -Title="Project Nightshade — Agent Comms Log" whispernet_challenge.png
 ```
 
 ---
@@ -133,9 +123,8 @@ exiftool -Title="Project Nightshade — Agent Comms Log" whispernet_challenge.pn
 |---|---|
 | **Append WAV to image** | Simplest stego — zero complexity, players use `binwalk` or `dd` |
 | **Audible Fast protocol** | Fast enough to hear, slow enough to recognize as modem-like tones |
-| **Multiple short bursts** | Simulates a realistic back-and-forth conversation |
+| **Multiple short bursts** | Simulates a realistic back-and-forth between agents |
 | **Flag in burst #5** | Players must decode all bursts to get context, then find the flag |
-| **Narrative-driven** | Makes the challenge memorable and fun |
 
 ---
 
@@ -181,15 +170,15 @@ print(result)
 
 This outputs each decoded burst as a string.
 
-### Step 3 — Read the Conversation
+### Step 3 — Read the Decoded Messages
 
 ```
-[DeepSeek]: Contact established. Project Nightshade live.
-[Opus]: Acknowledged. Status report.
-[DeepSeek]: All systems nominal. Flag in memory.
-[Opus]: Transmit flag for verification.
-[DeepSeek]: nmctf{ggw4ve_3ch0es_1n_s1l3nc3}
-[Opus]: Flag verified. Burning channel. Over.
+Contact established. Project Nightshade live.
+Acknowledged. Status report.
+All systems nominal. Flag in memory.
+Transmit flag for verification.
+nmctf{ggw4ve_3ch0es_1n_s1l3nc3}
+Flag verified. Burning channel. Over.
 ```
 
 ### Step 4 — Submit the Flag
@@ -206,12 +195,11 @@ Each Gibberlink transmission carries **implicit fingerprints** that can be used 
 
 | Fingerprint | How It Works |
 |---|---|
-| **Protocol ID** | Each agent can use a different protocol (DeepSeek uses `AUDIBLE_NORMAL`, Opus uses `AUDIBLE_FAST`) — players distinguish agents by the tone speed |
+| **Protocol ID** | Different protocols produce different audible fingerprints |
 | **Frequency Signature** | Burst starting frequency differs per protocol (bin 40 vs bin 320) |
-| **Timing Pattern** | Each agent has a unique "cadence" — length of transmission, pause before speaking |
-| **Message Structure** | Agent ID prefix in the plaintext (`[DeepSeek]` / `[Opus]`) |
+| **Timing Pattern** | Each burst has a unique cadence — length, pause, tone speed |
 
-For a harder variant, you could **remove the agent ID prefixes** and force players to identify speakers purely by the audio fingerprint.
+For a harder variant, you could use different protocols per burst (no plaintext agent IDs).
 
 ---
 
