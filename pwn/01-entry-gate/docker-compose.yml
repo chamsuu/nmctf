@@ -1,3 +1,16 @@
+name: "Entry Gate"
+category: Pwn
+description: "The entry system relies on a firmware update service. Management believes it is secure, prove them wrong."
+author: N4dj1b
+type: static
+value: 500
+
+connection_info: nc entry-gate.pwn.vuln3ra.com 13371
+files:
+- dist/doorbell
+- dist/README.md
+flag: nmctf{3ntry_g4t3_0v3rfl0w_f6b2}
+
 services:
   entry-gate:
     build: .
