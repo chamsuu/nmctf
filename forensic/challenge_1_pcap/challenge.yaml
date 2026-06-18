@@ -12,6 +12,8 @@ description: |
   - CVE number exploited to take control of the server
   - Target port of the reverse shell set up by the attacker on the server
 
+  Flag format: nmctf{attacker_ip_victim_ip_apache_version_cve_target_port}
+
   Note: The capture contains background noise and red herrings. Identify the actual malicious traffic.
 difficulty: medium
 author: 4mdj4d

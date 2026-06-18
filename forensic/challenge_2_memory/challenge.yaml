@@ -3,10 +3,13 @@ category: Forensic
 description: |
   The attacker didn't just stop at the network. They also targeted classified parameters for Project Numidian's quantum-gravitational core.
 
-  A memory capture (nit_breach_2.raw) was taken on the server shortly after the intrusion. 
+  A memory capture (nit_breach_2.raw, 1.0 GB) was taken on the server shortly after the intrusion. The database files were deleted while the service was still running.
 
-  Your mission: Analyze the memory dump, and extract the classified secret.
-  https://drive.google.com/file/d/1Dro0_xi9EuXWkZJYiO7G4W_whmS74g0G/view?usp=sharing
+  Your mission: Analyze the memory dump using Volatility 3, and extract the classified secret.
+
+  Download: https://drive.google.com/file/d/18dpiBPTaXFptWAAnyztV-CSIfosvsPqB/view?usp=sharing
+
+  Note: The flag is not stored as plaintext. You will need to decode it.
 difficulty: hard
 author: 4mdj4d
 type: static
