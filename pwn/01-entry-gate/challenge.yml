@@ -1,0 +1,17 @@
+name: Entry Gate
+author: N4dj1b
+category: Pwn
+description: |-
+  The entry system relies on a firmware update service. Management believes it is secure, prove them wrong.
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{3ntry_g4t3_0v3rfl0w_f6b2}
+tags:
+  - pwn
+  - arm32
+files:
+  - dist/doorbell
+  - dist/README.md
+requirements: []

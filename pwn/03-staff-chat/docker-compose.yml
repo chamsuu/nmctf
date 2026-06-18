@@ -1,18 +1,3 @@
-name: "Staff Chat"
-category: Pwn
-description: "The internal staff chat system recently received a security update designed to protect archived messages. Prove it isn't enough."
-author: N4dj1b
-type: static
-value: 500
-
-connection_info: nc staff-chat.pwn.vuln3ra.com 13373
-files:
-- dist/chat
-- dist/ld-linux-x86-64.so.2
-- dist/libc_2.31.so.6
-- dist/README.md
-flag: nmctf{st4ff_ch4t_tc4ch3_p01s0n_49e1}
-
 version: "3.8"
 services:
   staff-chat:
