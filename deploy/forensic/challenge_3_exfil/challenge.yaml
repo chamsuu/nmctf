@@ -1,0 +1,12 @@
+name: "NIT Breach [3/3]"
+category: Forensic
+description: |
+  The laboratory has tasked you with recovering the classified telemetry report from the exfiltrated data.
+  Good luck, agent.
+difficulty: hard
+author: 4mdj4d
+type: static
+
+
+
+state: hidden

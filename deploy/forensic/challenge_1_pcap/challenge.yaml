@@ -1,0 +1,24 @@
+name: "NIT Breach [1/3]"
+category: Forensic
+description: |
+  Researchers from the Numidia Institute Of Technology (NIT) contact you following a major cyberattack they have recently suffered. The attacker allegedly compromised their main server containing critical research data and exfiltrated most of the information before deleting the traces of the intrusion.
+
+  They provide you with a network capture covering the attack period, from the initial reconnaissance phase to data exfiltration.
+
+  By analyzing the capture, retrieve the following information:
+  - Attacker's IP address
+  - Victim server's IP address
+  - Apache server version on the server
+  - CVE number exploited to take control of the server
+  - Target port of the reverse shell set up by the attacker on the server
+
+  Note: The capture contains background noise and red herrings. Identify the actual malicious traffic.
+difficulty: medium
+author: 4mdj4d
+type: static
+flag: nmctf{172.16.50.133_172.16.50.100_2.4.59_CVE-2026-24061_4444}
+
+files:
+  - nit_breach_1_3.pcap
+
+state: hidden
