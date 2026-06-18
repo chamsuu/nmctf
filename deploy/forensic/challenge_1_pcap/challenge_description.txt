@@ -1,0 +1,16 @@
+Title: Operation Numidian
+Difficulty: easy
+Category: Forensics
+
+Description:
+Our Advanced Physical & Propulsion Studies laboratory experienced a severe data breach on June 17, 2026. An attacker successfully bypassed our firewall, compromised a development server, and exfiltrated a highly classified telemetry report regarding the "Numidian Core" prototype.
+
+We have managed to capture the network traffic during the attack window. 
+
+Your mission:
+1. Analyze the network capture to identify the initial compromise vector and locate the exfiltrated data.
+2. The attacker encrypted the stolen data before exfiltration. Recover the key and decrypt the payload.
+3. The recovered document is heavily obfuscated using advanced font-level tampering. Reverse-engineer the obfuscation to recover the true telemetry token.
+
+Assets provided:
+- nit_breach_1_3.pcap
