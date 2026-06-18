@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-WhisperNet — Solve Script
+RedKnight — Solve Script
 Extracts the Gibberlink audio from the challenge image
 and decodes it using ggwave.
 """
@@ -10,7 +10,7 @@ import wave
 import sys
 import os
 
-CHALLENGE_FILE = "whispernet_challenge.png"
+CHALLENGE_FILE = "redknight_challenge.png"
 
 def find_wav_offset(data: bytes) -> int:
     """Find the RIFF header offset in the appended data."""
