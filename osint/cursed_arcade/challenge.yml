@@ -13,4 +13,4 @@ description: >
   nmctf{place_name}
 difficulty: Medium
 type: static
-flag: CTF{westwood_college}
+flag: nmctf{westwood_college}
