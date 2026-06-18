@@ -1,0 +1,13 @@
+name: "manga store"
+category: Web
+description: this is a manga store that you can of any manga you want , thats not the funny thing about it , you can upload your own manga also , so can which manga is hiding the fla
+difficulty: easy   
+author: L_autor / denzeno
+type: static
+value: 500
+connection_info: http://manga-store.web.vuln3ra.com/
+flag:
+ nmctf{F0r_a_b3tt3r_life_l34rn_4bout_dr1zzl3_4nd_r34d_vagabond}
+
+# remove the files key entirely if the challenge should contain no files hhh
+state: hidden

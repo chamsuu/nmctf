@@ -1,11 +1,11 @@
-name: "Hidden_Archive"
+name: "L0d4shX"
 category: Web
-description: No big things, just a hidden archive.
+description: our developer trust his our users ...
 author: H4t3m
 type: static
 value: 500
 
-connection_info: http://68.221.178.66:8000/
+connection_info: http://l0d4shx.web.vuln3ra.com/
 files:
 - dist/L0d4shX.zip
 flag:
