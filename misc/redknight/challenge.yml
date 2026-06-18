@@ -1,0 +1,15 @@
+name: "RedKnight"
+category: misc
+description: "it's agents era .. ca you find the flag ??"
+difficulty: easy
+author: [Your Name]
+type: static
+extra:
+  initial: 100
+  decay: 0
+  minimum: 100
+
+flag: nmctf{ggw4ve_3ch0es_1n_s1l3nc3}
+
+
+state: hidden
