@@ -1,10 +1,12 @@
 CC_ARM   = arm-linux-gnueabihf-gcc
 CFLAGS   = -O1 -march=armv7-a -mfpu=vfpv3 -mfloat-abi=hard -marm -mthumb-interwork \
            -fno-pie -no-pie -fno-stack-protector \
+           -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 \
            -Wl,-z,noexecstack -static
 
 CFLAGS_THUMB = -O1 -march=armv7-a -mfpu=vfpv3 -mfloat-abi=hard -mthumb -mthumb-interwork \
-               -fno-pie -no-pie -fno-stack-protector
+               -fno-pie -no-pie -fno-stack-protector \
+               -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0
 
 .PHONY: all clean dist verify
 

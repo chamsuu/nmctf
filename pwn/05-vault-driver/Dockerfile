@@ -9,9 +9,8 @@ RUN apt-get update -qq && \
 
 RUN useradd -m ctf
 
-# Placeholder for kernel files - these should be copied manually
-RUN mkdir -p /challenge
-
+# Copy binaries - these must be pre-built
+COPY dist /challenge/dist
 COPY qemu/run.sh /challenge/run.sh
 COPY flag.txt /flag.txt
 RUN chmod +x /challenge/run.sh
