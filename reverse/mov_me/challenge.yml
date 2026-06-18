@@ -1,19 +1,9 @@
-name: M/o/Vfuscator Side Channel
+name: mov-me
 author: chamsuu
 category: Reverse
 description: |-
-  A 32-bit Linux ELF compiled with the M/o/Vfuscator -- every
-  instruction in the binary is a `mov`, so static analysis of the
-  flag is intentionally painful. The flag is reconstructed at
-  runtime from two non-string tables (BASE + ADD), and the program
-  exits early on any wrong character, producing a per-position
-  TIMING oracle. The intended solve is to brute-force the flag one
-  character at a time using wall-clock measurements. See
-  src/solve.py for the reference solver and src/writeup.md for the
-  full walkthrough.
+  What the f* is this?
 
-  Usage:    ./chall <candidate>
-  Example:  ./chall nmctf{m0v_th3_fl4g_l0rd}    -> "correct"
 value: 500
 type: standard
 state: visible
@@ -22,9 +12,6 @@ flags:
   - nmctf{m0v_th3_fl4g_l0rd}
 tags:
   - reverse
-  - movfuscator
-  - side-channel
-  - timing
 files:
   - dist/chall
 requirements: []
