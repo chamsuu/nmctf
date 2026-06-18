@@ -24,8 +24,8 @@ chmod +x "$SCRIPT_DIR/files/init"
 cp "$SCRIPT_DIR/../dist/vault_sec.ko" "$SCRIPT_DIR/files/"
 # (Exploit is NOT pre-loaded for the final release)
 
-# Create flag file
-echo "nmctf{K3RN3L_R4C3_CR3D_0V3RW173}" > "$SCRIPT_DIR/files/flag.txt"
+# Create flag file - matched to docker-compose.yml
+echo "nmctf{v4ult_dr1v3r_k3rn3l_uaf_h34p}" > "$SCRIPT_DIR/files/flag.txt"
 
 # Create cpio archive
 cd "$SCRIPT_DIR/files"

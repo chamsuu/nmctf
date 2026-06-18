@@ -7,5 +7,7 @@ services:
     ports:
       - "13374:1337"
     restart: unless-stopped
+    environment:
+      - FLAG=nmctf{GR1D_0V3RL04D_BL4CK0UT_P1V0T}
     mem_limit: 512m
     cpus: 1.0

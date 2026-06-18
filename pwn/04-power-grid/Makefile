@@ -1,5 +1,6 @@
 CC_A64  = aarch64-linux-gnu-gcc
 CFLAGS  = -O2 -fPIE -fno-stack-protector \
+          -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0 \
           -march=armv8-a -fno-omit-frame-pointer
 LDFLAGS = -pie -Wl,-z,relro,-z,now
 
