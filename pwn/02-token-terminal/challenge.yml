@@ -1,0 +1,17 @@
+name: Token Terminal
+author: N4dj1b
+category: Pwn
+description: |-
+  The Token Terminal manages customer orders and refunds. Can you gain access to the maintenance system?
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{t0k3n_t3rm1n4l_bss_0v3rwr1t3_7d3a}
+tags:
+  - pwn
+  - x86_32
+files:
+  - dist/pos
+  - dist/README.md
+requirements: []

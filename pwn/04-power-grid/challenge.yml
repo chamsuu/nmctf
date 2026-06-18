@@ -1,0 +1,17 @@
+name: Power Grid
+author: N4dj1b
+category: Pwn
+description: |-
+  The power grid control system uses a custom PLC firmware. Can you overload the system?
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{GR1D_0V3RL04D_BL4CK0UT_P1V0T}
+tags:
+  - pwn
+  - arm64
+files:
+  - dist/plc
+  - dist/README.md
+requirements: []

@@ -1,0 +1,19 @@
+name: Staff Chat
+author: N4dj1b
+category: Pwn
+description: |-
+  The internal staff chat system recently received a security update designed to protect archived messages. Prove it isn't enough.
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{st4ff_ch4t_tc4ch3_p01s0n_49e1}
+tags:
+  - pwn
+  - heap
+files:
+  - dist/chat
+  - dist/ld-linux-x86-64.so.2
+  - dist/libc_2.31.so.6
+  - dist/README.md
+requirements: []

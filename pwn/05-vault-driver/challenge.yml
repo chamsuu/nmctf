@@ -1,0 +1,19 @@
+name: Vault Driver
+author: N4dj1b
+category: Kernel
+description: |-
+  The Security Vault Driver is a custom kernel module designed to protect sensitive credentials. Can you bypass its protections and achieve root?
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{K3RN3L_R4C3_CR3D_0V3RW173}
+tags:
+  - kernel
+  - race_condition
+files:
+  - dist/bzImage
+  - dist/rootfs.cpio.gz
+  - dist/vault_sec.ko
+  - dist/README.md
+requirements: []
