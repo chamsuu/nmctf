@@ -15,7 +15,7 @@
 
 ## Narrative / Backstory
 
-> In 2026, Numidians Corp deployed two AI voice agents — **ECHO-7** (field operative) and **NOVA-2** (command center) — to handle secure internal communications across their infrastructure.
+> In 2026, Numidians Corp deployed two AI voice agents — **DeepSeek** (field operative) and **Opus** (command center) — to handle secure internal communications across their infrastructure.
 >
 > The agents were trained to use **Gibberlink** — an AI-to-AI audio protocol — whenever they detected another AI on the line. It was efficient. It was secret. It was not meant for human ears.
 >
@@ -35,7 +35,7 @@ Players receive a single file:
 whispernet_challenge.png
 ```
 
-This is a **normal-looking image** (an agent badge / logo) with a **WAV file appended** to its end. The WAV contains a Gibberlink (ggwave) audio conversation between two AI agents: **ECHO-7** and **NOVA-2**.
+This is a **normal-looking image** (an agent badge / logo) with a **WAV file appended** to its end. The WAV contains a Gibberlink (ggwave) audio conversation between two AI agents: **DeepSeek** and **Opus**.
 
 The image displays fine in any viewer. The appended audio is invisible to the naked eye.
 
@@ -45,12 +45,12 @@ The audio contains **6 Gibberlink bursts**, each one a "turn" in the conversatio
 
 | Turn | Agent | Gibberlink Message |
 |---|---|---|
-| 1 | ECHO-7 | `"Contact established. Project Nightshade live."` |
-| 2 | NOVA-2 | `"Acknowledged. Status report."` |
-| 3 | ECHO-7 | `"All systems nominal. Flag in memory."` |
-| 4 | NOVA-2 | `"Transmit flag for verification."` |
-| 5 | ECHO-7 | `"nmctf{ggw4ve_3ch0es_1n_s1l3nc3}"` |
-| 6 | NOVA-2 | `"Flag verified. Burning channel. Over."` |
+| 1 | DeepSeek | `"Contact established. Project Nightshade live."` |
+| 2 | Opus | `"Acknowledged. Status report."` |
+| 3 | DeepSeek | `"All systems nominal. Flag in memory."` |
+| 4 | Opus | `"Transmit flag for verification."` |
+| 5 | DeepSeek | `"nmctf{ggw4ve_3ch0es_1n_s1l3nc3}"` |
+| 6 | Opus | `"Flag verified. Burning channel. Over."` |
 
 Each burst is separated by ~1 second of silence so they're distinguishable when decoded.
 
@@ -120,7 +120,7 @@ The image will display normally. The WAV sits silently at the end of the file.
 Enrich the image with metadata hints:
 
 ```bash
-exiftool -Artist="ECHO-7" whispernet_challenge.png
+exiftool -Artist="DeepSeek" whispernet_challenge.png
 exiftool -Description="ggwave decode me" whispernet_challenge.png
 exiftool -Title="Project Nightshade — Agent Comms Log" whispernet_challenge.png
 ```
@@ -184,12 +184,12 @@ This outputs each decoded burst as a string.
 ### Step 3 — Read the Conversation
 
 ```
-[ECHO-7]: Contact established. Project Nightshade live.
-[NOVA-2]: Acknowledged. Status report.
-[ECHO-7]: All systems nominal. Flag in memory.
-[NOVA-2]: Transmit flag for verification.
-[ECHO-7]: nmctf{ggw4ve_3ch0es_1n_s1l3nc3}
-[NOVA-2]: Flag verified. Burning channel. Over.
+[DeepSeek]: Contact established. Project Nightshade live.
+[Opus]: Acknowledged. Status report.
+[DeepSeek]: All systems nominal. Flag in memory.
+[Opus]: Transmit flag for verification.
+[DeepSeek]: nmctf{ggw4ve_3ch0es_1n_s1l3nc3}
+[Opus]: Flag verified. Burning channel. Over.
 ```
 
 ### Step 4 — Submit the Flag
@@ -206,10 +206,10 @@ Each Gibberlink transmission carries **implicit fingerprints** that can be used 
 
 | Fingerprint | How It Works |
 |---|---|
-| **Protocol ID** | Each agent can use a different protocol (ECHO-7 uses `AUDIBLE_NORMAL`, NOVA-2 uses `AUDIBLE_FAST`) — players distinguish agents by the tone speed |
+| **Protocol ID** | Each agent can use a different protocol (DeepSeek uses `AUDIBLE_NORMAL`, Opus uses `AUDIBLE_FAST`) — players distinguish agents by the tone speed |
 | **Frequency Signature** | Burst starting frequency differs per protocol (bin 40 vs bin 320) |
 | **Timing Pattern** | Each agent has a unique "cadence" — length of transmission, pause before speaking |
-| **Message Structure** | Agent ID prefix in the plaintext (`[ECHO-7]` / `[NOVA-2]`) |
+| **Message Structure** | Agent ID prefix in the plaintext (`[DeepSeek]` / `[Opus]`) |
 
 For a harder variant, you could **remove the agent ID prefixes** and force players to identify speakers purely by the audio fingerprint.
 
