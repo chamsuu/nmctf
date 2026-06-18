@@ -5,10 +5,7 @@ description: i have a little mission for you. i need help investigating a suspic
 difficulty: medium
 author: L_autor / denzeno
 type: static
-extra:
-  initial: 500
-  decay: 150
-  minimum: 100
+value : 500 
 
 flag: nmctf{ahmed-ben-abderrazak_laala_27041997_charikat-el-raha_douaa-lipa_evalina_04122002_22032022}
 
