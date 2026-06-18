@@ -5,7 +5,7 @@
 ### Binary Information
 ```bash
 $ file doorbell
-doorbell: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), statically linked, not stripped
+doorbell: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), statically linked, stripped
 
 $ checksec --file=doorbell
 Arch: arm-32
