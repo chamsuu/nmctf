@@ -8,7 +8,7 @@ RUN apt-get update -qq && \
 
 RUN useradd -m -s /bin/sh ctf
 
-COPY build/doorbell /challenge/doorbell
+COPY dist/doorbell /challenge/doorbell
 COPY flag.txt /flag.txt
 RUN chmod 444 /flag.txt && \
     chmod 755 /challenge/doorbell

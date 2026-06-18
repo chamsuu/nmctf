@@ -6,12 +6,11 @@ The Token Terminal manages customer orders and refunds. Can you gain access to t
 
 ## Local Testing
 
-You can run the challenge locally on an x86_64 host (requires 32-bit libs):
+Run with the provided 32-bit loader :
 
 ```bash
-# Start the challenge server
-# It will listen on port 1337 by default
-./pos
+# Start the challenge server (port 1337)
+./ld-linux.so.2 --library-path . ./pos
 ```
 
 In a second terminal, connect to it:
@@ -19,11 +18,13 @@ In a second terminal, connect to it:
 nc localhost 1337
 ```
 
-**Note:** Ensure the binary is executable (`chmod +x pos`).
+**Note:** Ensure binaries are executable (`chmod +x pos ld-linux.so.2`).
 
 ## Files
 
 - `pos`: The binary
+- `ld-linux.so.2`: 32-bit dynamic linker (glibc 2.27)
+- `libc.so.6`: 32-bit C library (glibc 2.27)
 
 ## Connectivity
 

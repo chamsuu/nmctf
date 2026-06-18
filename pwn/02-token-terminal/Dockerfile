@@ -1,19 +1,3 @@
-# Build stage - compile on Ubuntu 18.04
-FROM ubuntu:18.04 AS builder
-
-RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends \
-        gcc-multilib && \
-    rm -rf /var/lib/apt/lists/*
-
-COPY src/pos.c /tmp/pos.c
-WORKDIR /tmp
-
-RUN gcc -m32 -O1 -fno-pie -no-pie -fno-stack-protector \
-    -Wl,-z,noexecstack -Wl,-z,relro \
-    -o pos pos.c
-
-# Runtime stage - run on Ubuntu 18.04
 FROM ubuntu:18.04
 
 RUN apt-get update -qq && \
@@ -24,7 +8,7 @@ RUN apt-get update -qq && \
 
 RUN useradd -m -s /bin/sh ctf
 
-COPY --from=builder /tmp/pos /challenge/pos
+COPY dist/pos /challenge/pos
 COPY flag.txt /flag.txt
 
 RUN chmod 444 /flag.txt && \
