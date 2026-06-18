@@ -6,6 +6,6 @@ author: H4t3m
 type: static
 value: 500
 
-connection_info: http://68.221.178.66:8080/
+connection_info: http://hidden.web.vuln3ra.com/
 flag:
  nmctf{Hidd3n_4rch1v3_1s_n0t_very_s3cur3_4ft3r_4ll}
