@@ -1,15 +1,15 @@
-name: "RedKnight"
-category: misc
+name: RedKnight
+author: Vuln3rat0r
+category: Misc
 description: "it's agents era .. ca you find the flag ??"
-difficulty: easy
-author: [Your Name]
-type: static
-extra:
-  initial: 100
-  decay: 0
-  minimum: 100
-
-flag: nmctf{ggw4ve_3ch0es_1n_s1l3nc3}
-
-
+value: 100
+type: standard
 state: hidden
+max_attempts: 0
+flags:
+  - nmctf{ggw4ve_3ch0es_1n_s1l3nc3}
+tags:
+  - misc
+files:
+  - dist/redknight_challenge.png
+requirements: []
