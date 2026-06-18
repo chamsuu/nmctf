@@ -1,0 +1,12 @@
+name: "stingo"
+category: Web
+Description: actually i made an osint about stingo and i found that he is an admin at something !!! I wonder how i can enter his mail
+difficulty: hard  
+author: L_autor / denzeno
+type: static
+value: 500
+connection_info: http://stingo.web.vuln3ra.com/
+flag:
+ nmctf{Th1s_1s_D3d1c4ted_T0_St1ng0_B4r44}
+
+state: hidden
