@@ -1,0 +1,19 @@
+name: hijo!!! 
+author: koyphshi
+category: Crypto
+description: |-
+Everything is changing, it's just nature, I just happened to be here
+value: 500
+type: standard
+state: visible
+flags:
+
+  - nmctf{Y0U_5H0U1D_JU57_PR4Y_WH01EH34R73D1Y_F0R_H4PP1N355}
+  tags:
+    - crypto
+  files:
+    - chall.py
+    - output.txt
+
+  requirements: []
+
