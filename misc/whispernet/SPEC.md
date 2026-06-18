@@ -8,7 +8,7 @@
 | **Challenge Name** | WhisperNet |
 | **Difficulty** | Easy |
 | **Points** | 100 |
-| **Flag Format** | `NMDCTF{...}` |
+| **Flag Format** | `nmctf{...}` |
 | **Author** | [Your Name] |
 
 ---
@@ -49,7 +49,7 @@ The audio contains **6 Gibberlink bursts**, each one a "turn" in the conversatio
 | 2 | NOVA-2 | `"Acknowledged. Status report."` |
 | 3 | ECHO-7 | `"All systems nominal. Flag in memory."` |
 | 4 | NOVA-2 | `"Transmit flag for verification."` |
-| 5 | ECHO-7 | `"NMDCTF{ggw4ve_3ch0es_1n_s1l3nc3}"` |
+| 5 | ECHO-7 | `"nmctf{ggw4ve_3ch0es_1n_s1l3nc3}"` |
 | 6 | NOVA-2 | `"Flag verified. Burning channel. Over."` |
 
 Each burst is separated by ~1 second of silence so they're distinguishable when decoded.
@@ -82,7 +82,7 @@ messages = [
     b"Acknowledged. Status report.",
     b"All systems nominal. Flag in memory.",
     b"Transmit flag for verification.",
-    b"NMDCTF{ggw4ve_3ch0es_1n_s1l3nc3}",
+    b"nmctf{ggw4ve_3ch0es_1n_s1l3nc3}",
     b"Flag verified. Burning channel. Over.",
 ]
 
@@ -188,14 +188,14 @@ This outputs each decoded burst as a string.
 [NOVA-2]: Acknowledged. Status report.
 [ECHO-7]: All systems nominal. Flag in memory.
 [NOVA-2]: Transmit flag for verification.
-[ECHO-7]: NMDCTF{ggw4ve_3ch0es_1n_s1l3nc3}
+[ECHO-7]: nmctf{ggw4ve_3ch0es_1n_s1l3nc3}
 [NOVA-2]: Flag verified. Burning channel. Over.
 ```
 
 ### Step 4 — Submit the Flag
 
 ```
-NMDCTF{ggw4ve_3ch0es_1n_s1l3nc3}
+nmctf{ggw4ve_3ch0es_1n_s1l3nc3}
 ```
 
 ---
