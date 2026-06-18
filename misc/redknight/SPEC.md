@@ -1,11 +1,11 @@
-# WhisperNet — Challenge Specification
+# RedKnight — Challenge Specification
 
 ## Overview
 
 | Field | Value |
 |---|---|
 | **Category** | Misc + OSINT (Hybrid) |
-| **Challenge Name** | WhisperNet |
+| **Challenge Name** | RedKnight |
 | **Difficulty** | Easy |
 | **Points** | 100 |
 | **Flag Format** | `nmctf{...}` |
@@ -26,7 +26,7 @@
 Players receive a single file:
 
 ```
-whispernet_challenge.png
+redknight_challenge.png
 ```
 
 A standard image with a WAV file appended at the end. The WAV contains audio data encoded with the ggwave protocol. The image displays fine in any viewer.
@@ -101,8 +101,8 @@ with wave.open("whisper.wav", "w") as f:
 Append the WAV to a cover image:
 
 ```bash
-cp cover_image.png whispernet_challenge.png
-cat whisper.wav >> whispernet_challenge.png
+cp cover_image.png redknight_challenge.png
+cat whisper.wav >> redknight_challenge.png
 ```
 
 The image will display normally. The WAV sits silently at the end of the file.
@@ -112,7 +112,7 @@ The image will display normally. The WAV sits silently at the end of the file.
 Enrich the image with metadata hints:
 
 ```bash
-exiftool -Description="ggwave decode me" whispernet_challenge.png
+exiftool -Description="ggwave decode me" redknight_challenge.png
 ```
 
 ---
@@ -136,15 +136,15 @@ The player recognizes that the PNG has extra data appended:
 
 ```bash
 # Option A: Use binwalk
-binwalk whispernet_challenge.png
+binwalk redknight_challenge.png
 # Shows: WAV audio file at offset X
 
 # Option B: Use strings
-strings whispernet_challenge.png | grep -i "RIFF"
+strings redknight_challenge.png | grep -i "RIFF"
 # Finds the WAV header
 
 # Extract with dd
-dd if=whispernet_challenge.png of=comms.wav bs=1 skip=<OFFSET>
+dd if=redknight_challenge.png of=comms.wav bs=1 skip=<OFFSET>
 ```
 
 ### Step 2 — Decode the Gibberlink
@@ -219,10 +219,10 @@ For a harder variant, you could use different protocols per burst (no plaintext 
 The challenge package should contain:
 
 ```
-whispernet/
+redknight/
 ├── SPEC.md                  ← This document
 ├── dist/
-│   └── whispernet_challenge.png   ← The challenge file (image + WAV)
+│   └── redknight_challenge.png   ← The challenge file (image + WAV)
 ├── src/
 │   └── encode.py            ← Script to regenerate the WAV (for reference)
 └── solve/

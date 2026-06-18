@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-WhisperNet — Gibberlink Audio Generator
+RedKnight — Gibberlink Audio Generator
 Generates a multi-burst GGWave-encoded WAV file simulating
 a conversation between two AI agents.
 """
