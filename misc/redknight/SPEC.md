@@ -15,7 +15,7 @@
 
 ## Description (Player-Facing)
 
-> it's agents era .. ca you find the flag ??
+> introducing my powerful ai agent yet .. RedKnight
 
 ---
 
