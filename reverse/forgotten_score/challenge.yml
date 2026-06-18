@@ -1,14 +1,8 @@
-name: Forgotten Score
+name: Music to my ears
 author: chamsuu
 category: Reverse
 description: |-
-  A 14 KB reversing binary, encoded as a 20 MB WAV music file using a
-  1-bit-per-tone scheme (0 = 440 Hz, 1 = 880 Hz, 2 ms per bit). Decode
-  the music back into a binary with src/wav2bin.py, then reverse the
-  binary to find the flag. The vault is keyed by a forgotten musical
-  score (note names A..G) combined with a Roman-numeral tempo
-  (MMXXV = 2025). Two melodies are stored: a real one and a decoy;
-  the decoy also decrypts cleanly to a fake flag. Find the real one.
+  I think i heard the flag. can you hear it too?
 value: 500
 type: standard
 state: visible
@@ -17,8 +11,6 @@ flags:
   - nmctf{m3l0dy_0f_th3_f0rg0tt3n_sc0r3}
 tags:
   - reverse
-  - audio
-  - xor
 files:
   - dist/forgotten_score.wav
   - dist/temporal_vault
