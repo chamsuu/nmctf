@@ -1,3 +1,16 @@
+name: "Token Terminal"
+category: Pwn
+description: "The Token Terminal manages customer orders and refunds. Can you gain access to the maintenance system?"
+author: N4dj1b
+type: static
+value: 500
+
+connection_info: nc token-terminal.pwn.vuln3ra.com 13372
+files:
+- dist/pos
+- dist/README.md
+flag: nmctf{t0k3n_t3rm1n4l_bss_0v3rwr1t3_7d3a}
+
 services:
   token-terminal:
     build: .

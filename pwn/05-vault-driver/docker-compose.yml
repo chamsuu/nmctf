@@ -1,3 +1,18 @@
+name: "Vault Driver"
+category: Kernel
+description: "The Power Grid Controller is protected by proprietary ARM64 defenses. Can you break in?"
+author: N4dj1b
+type: static
+value: 500
+
+connection_info: nc vault-driver.pwn.vuln3ra.com 13375
+files:
+- dist/bzImage
+- dist/rootfs.cpio.gz
+- dist/vault_sec.ko
+- dist/README.md
+flag: nmctf{K3RN3L_R4C3_CR3D_0V3RW173}
+
 version: "3.8"
 services:
   vault-driver:
