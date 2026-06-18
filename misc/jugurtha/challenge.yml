@@ -6,10 +6,7 @@ description: The Roman Senate burned every scroll that told the truth of Jugurth
 difficulty: medium   
 author: L_autor / denzeno
 type: static
-extra:
-  initial: 500
-  decay: 150
-  minimum: 100
+value : 500 
 
 flag: nmctf{By_H3rcul3s_H0w_C0ld_Y0ur_R0m4n_B4th_1s_!}
 
