@@ -10,7 +10,7 @@ extra:
   decay: 150
   minimum: 100
 
-flag: nmctf{first-name_surname_nickname_birthday_company_partner-name_nickname_birthday_relationship-anniversary}
+flag: nmctf{ahmed-ben-abderrazak_laala_27041997_charikat-el-raha_douaa-lipa_evalina_04122002_22032022}
 
 
 state: hidden
