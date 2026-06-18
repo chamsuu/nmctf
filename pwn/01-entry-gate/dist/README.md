@@ -1,32 +1,34 @@
 # Challenge 01: Entry Gate
-**Category:** PWN  
-**Difficulty:** Easy  
-**Points:** 100  
-**Author:** N4dj1b
 
 ## Description
 
 The entry system relies on a firmware update service. Management believes it is secure, prove them wrong.
 
-## Files
-
-- `doorbell`: binary
-- `run-qemu.sh`: QEMU-based local testing
-
 ## Local Testing
 
+You can run the challenge locally using the ARM emulator:
+
 ```bash
-./run-qemu.sh
+# Start the challenge server
+# It will listen on port 1337 by default
+qemu-arm ./doorbell
 ```
 
-Requires QEMU ARM emulation:
+In a second terminal, connect to it:
 ```bash
-sudo apt-get install qemu-user-static  # or qemu-arm
+nc localhost 1337
 ```
 
-## Remote Play
+**Note:** If the command fails, ensure you have the emulator installed:
+`sudo apt-get install qemu-user-static` (or `qemu-arm`)
 
-For the actual CTF, connect to the deployed instance:
+## File
+
+- `doorbell`: The binary
+
+## Connectivity
+
+Connect to the remote instance:
 ```bash
-nc <host> <port>
+nc entrygate.ctf.vuln3ra.com 1337
 ```
