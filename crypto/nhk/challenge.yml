@@ -1,0 +1,16 @@
+name: nhk
+author: koyphshi
+category: Crypto
+description: |-
+  "It doesn't matter if you're weak. It doesn't matter if you're useless. Even if you amount to nothing, you still have the right to live. You don't need a reason to exist. You were born, and that's enough. The world doesn't owe you a purpose, and you don't owe the world one either. People spend their whole lives searching for meaning, chasing conspiracies, blaming invisible forces for their failures, when the truth is far simpler and far more terrifying: there is no grand conspiracy holding you back, no secret organization pulling the strings, no NHK plotting your downfall from the shadows. The only thing standing between you and the life you want is you, your fear, your hesitation, your willingness to hide behind excuses and let the days blur together into nothing. But even knowing that, even understanding it completely, change doesn't come easy. You can see the door, know it's unlocked, and still refuse to turn the handle because the room you're trapped in has become comfortable in its misery. That's the real conspiracy, the one you build for yourself, brick by brick, excuse by excuse, until the walls are so high you forget what the sky looks like. And yet, despite all of that, despite every wasted day and every broken promise to yourself, tomorrow still comes. The sun rises whether you're ready or not, and with it comes another chance, another moment where you could choose differently, could take one small step instead of standing still. That's not hope, that's just reality, indifferent and relentless and waiting for no one. So the question was never whether you can change, it's whether you will, and nobody, not even the NHK, can answer that for you."
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{buy_me_coffee_plssssss}
+tags:
+  - crypto
+files:
+  - chall.py
+  - output.txt
+requirements: []
