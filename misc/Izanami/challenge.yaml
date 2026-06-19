@@ -1,0 +1,20 @@
+name: Mirror Cell
+author: gh0s7w1L
+category: misc
+description: |-
+  You wake up every day in the same loop.
+  Everything repeats, the cell resets, and nothing you keep inside seems to matter.
+  The only way to escape is to accept your destiny.
+
+  Connect with:
+  `nc <host> <port>`
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{4dm17_7h3_7r4v3r54l_1s_7he_w4y_70_35c4p3_7h3_l00p}
+tags:
+  - misc
+  - pyjail
+  - tar
+  - traversal
