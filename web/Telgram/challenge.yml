@@ -1,0 +1,12 @@
+name: Telgram
+author: H4t3m
+category: web
+description: |
+  our company build internal chat app for our admins , but there is somthing wrong can you find it ?
+  flag : part 1 + part 2
+
+host:  https://telgram.extra.vuln3ra.com/
+flag: nmctf{W3_T3ll_T0_Us3_Y0ur_3m41l_Bu7_7h47_1d_N33d_T0_B3_53cr37}
+tags:
+  - web
+files: hidden
