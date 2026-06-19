@@ -1,0 +1,19 @@
+name: "Shadow Hunt"
+category: osint
+description: I am in a safe zone now, about 180 feet above the ground, but I still don’t understand how they managed to find my location from a satellite.
+  What are they trying to draw with that shadow? This is crazy.
+
+  It’s impossible to recover my position, right?
+
+  Flag format CTF{latitude_longitude}
+  Use decimal coordinates with 5 digits after the decimal point.
+difficulty: medium
+author: gh0s7w1L
+type: static
+value : 500 
+
+flag: nmctf{37.2466,-115.8223}
+
+
+state: hidden
+
