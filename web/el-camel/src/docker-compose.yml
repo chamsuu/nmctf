@@ -1,0 +1,37 @@
+services:
+  el-camel:
+    build: ./el-camel
+    container_name: el-camel
+    ports:
+      - "80:80"
+    networks:
+      - camel-network
+    depends_on:
+      - internal-logger
+    restart: unless-stopped
+    # The app can reach internet AND internal services
+
+  internal-logger:
+    build: ./internal-logger
+    container_name: internal-logger
+    hostname: internal-logger.local
+    expose:
+      - "8080"
+    networks:
+      - camel-network
+    restart: unless-stopped
+    environment:
+      - FLAG=nmctf{Th3_s4f3st_tr1p_1s_4lways_w1th_camel_!!!!}
+    # NO exposed ports — internal only, no internet access
+    # This container is isolated on the internal network
+
+networks:
+  camel-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.0.1
+    # The internal-logger container can ONLY communicate on camel-network
+    # It has no internet access (no default gateway on its namespace)
+    # el-camel can reach both internet and camel-network

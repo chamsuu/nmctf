@@ -1,0 +1,22 @@
+name: "el camel"
+category: Web
+description: |
+  el camel is really good product, but now i developed it to something else !!!,
+  if you want a safe traffic, secure content, without any threats, relax and ride el camel.
+difficulty: intermediate
+author: chamsuu
+type: static
+value: 500
+connection_info: http://localhost/
+flag:
+  nmctf{Th3_s4f3st_tr1p_1s_4lways_w1th_camel_!!!!}
+
+state: visible
+
+tags:
+  - web
+  - ssrf
+  - blind-ssrf
+  - base64-bypass
+  - exfiltration
+  - docker

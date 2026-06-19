@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>el camel - Enterprise Traffic Validator</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #141b2d 40%, #1a2340 100%);
+            min-height: 100vh;
+            color: #e0e6f0;
+            overflow-x: hidden;
+        }
+
+        /* ===== AMBIENT ANIMATIONS ===== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(10px) rotate(-1deg); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 80px rgba(59, 130, 246, 0.6); }
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== SCANLINE OVERLAY ===== */
+        .scan-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 200, 0.02) 2px,
+                rgba(0, 255, 200, 0.02) 4px
+            );
+        }
+
+        /* ===== GRID BACKGROUND ===== */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        /* ===== LOGO ===== */
+        .logo-container {
+            animation: float 6s ease-in-out infinite;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .logo-container img {
+            width: 180px;
+            height: auto;
+            filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.4));
+            border-radius: 50%;
+        }
+
+        .logo-container h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #60a5fa, #34d399, #60a5fa);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+            margin-top: 0.5rem;
+        }
+
+        .tagline {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+            font-weight: 300;
+        }
+
+        /* ===== DASHBOARD CARD ===== */
+        .dashboard-card {
+            background: rgba(20, 27, 45, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            width: 100%;
+            max-width: 640px;
+            animation: pulse-glow 4s ease-in-out infinite, fadeInUp 0.8s ease-out;
+            margin-top: 1.5rem;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.5);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .status-text {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .status-text span {
+            color: #34d399;
+            font-weight: 600;
+        }
+
+        .dashboard-card h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #e0e6f0;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-card p {
+            color: #64748b;
+            font-size: 0.92rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* ===== INPUT GROUP ===== */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .input-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #94a3b8;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(10, 14, 26, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+
+        .input-wrapper .icon {
+            padding: 0 0 0 1rem;
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 1rem 0.75rem;
+            color: #e0e6f0;
+            font-size: 0.95rem;
+            font-family: 'Segoe UI', sans-serif;
+            outline: none;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #475569;
+        }
+
+        /* ===== RADIO TOGGLE ===== */
+        .mode-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            background: rgba(10, 14, 26, 0.4);
+            border-radius: 10px;
+            padding: 4px;
+        }
+
+        .mode-toggle label {
+            flex: 1;
+            text-align: center;
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #64748b;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mode-toggle input[type="radio"] {
+            display: none;
+        }
+
+        .mode-toggle input[type="radio"]:checked + label {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+        }
+
+        .mode-toggle label:hover {
+            color: #94a3b8;
+        }
+
+        /* ===== SUBMIT BUTTON ===== */
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(59, 130, 246, 0.35);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn .btn-shimmer {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover .btn-shimmer {
+            left: 100%;
+        }
+
+        /* ===== RESPONSE OUTPUT ===== */
+        .response-area {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            border-radius: 12px;
+            background: rgba(10, 14, 26, 0.4);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            min-height: 80px;
+            display: none;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .response-area.visible {
+            display: block;
+        }
+
+        .response-area .resp-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .response-area .resp-status {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .response-area .resp-msg {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        .response-area.status-safe .resp-status { color: #34d399; }
+        .response-area.status-safe { border-color: rgba(52, 211, 153, 0.3); }
+
+        .response-area.status-blocked .resp-status { color: #f87171; }
+        .response-area.status-blocked { border-color: rgba(248, 113, 113, 0.3); }
+
+        .response-area.status-error .resp-status { color: #fbbf24; }
+        .response-area.status-error { border-color: rgba(251, 191, 36, 0.3); }
+
+        /* ===== SPINNER ===== */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto;
+        }
+
+        .spinner.active { display: inline-block; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== LOADING STATE ===== */
+        .submit-btn.loading .btn-text { display: none; }
+        .submit-btn.loading .spinner { display: inline-block; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            position: fixed;
+            bottom: 1.5rem;
+            text-align: center;
+            width: 100%;
+            color: #334155;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        .footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .logo-container h1 { font-size: 2.2rem; letter-spacing: 3px; }
+            .dashboard-card { padding: 2rem 1.25rem; }
+            .dashboard-card h2 { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Scanline overlay for that "secure monitoring" vibe -->
+    <div class="scan-overlay"></div>
+    <div class="grid-bg"></div>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='Camel-logo-768x432.png') if False else '/static/Camel-logo-768x432.png' }}" 
+                 alt="el camel logo"
+                 onerror="this.parentElement.innerHTML += '<div style=\'font-size:5rem;margin-bottom:0.5rem;\'>🐪</div>'; this.style.display='none'">
+            <h1>el camel</h1>
+            <p class="tagline">Secure Traffic &bull; Safe Content &bull; Zero Threats</p>
+        </div>
+
+        <!-- Dashboard Card -->
+        <div class="dashboard-card">
+            <div class="status-bar">
+                <div class="status-dot"></div>
+                <div class="status-text">System Status: <span>OPERATIONAL</span> &mdash; All rides secure</div>
+            </div>
+
+            <h2>🔒 Service Endpoint Validator</h2>
+            <p>Submit an endpoint URL for comprehensive traffic validation. Our proprietary threat engine inspects every ride for malicious patterns.</p>
+
+            <!-- Mode Toggle -->
+            <div class="mode-toggle">
+                <input type="radio" name="input_mode" id="mode_url" value="service_url" checked>
+                <label for="mode_url">Plain URL</label>
+                <input type="radio" name="input_mode" id="mode_raw" value="raw_ride">
+                <label for="mode_raw">Raw Ride (Base64)</label>
+            </div>
+
+            <!-- Input Group -->
+            <div class="input-group">
+                <label for="endpoint_input">Enter Service Endpoint for Traffic Validation</label>
+                <div class="input-wrapper">
+                    <span class="icon">🔗</span>
+                    <input type="text" id="endpoint_input" 
+                           placeholder="https://example.com/health"
+                           autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button class="submit-btn" id="validateBtn" onclick="validateEndpoint()">
+                <span class="btn-text">🐪 Validate &amp; Ride</span>
+                <div class="spinner"></div>
+                <div class="btn-shimmer"></div>
+            </button>
+
+            <!-- Response -->
+            <div class="response-area" id="responseArea">
+                <div class="resp-label">Validation Result</div>
+                <div class="resp-status" id="respStatus">—</div>
+                <div class="resp-msg" id="respMsg">—</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            el camel &mdash; Enterprise Traffic Validation Suite &bull; v2.4.1
+        </div>
+    </section>
+
+    <script>
+        /**
+         * el camel - Dashboard Controller
+         * Handles endpoint validation with both plain URL and Base64 modes.
+         * 
+         * TODO: In production, consider adding rate limiting and input sanitization.
+         * Currently relying on backend filter for threat detection.
+         */
+        async function validateEndpoint() {
+            const input = document.getElementById('endpoint_input');
+            const btn = document.getElementById('validateBtn');
+            const responseArea = document.getElementById('responseArea');
+            const respStatus = document.getElementById('respStatus');
+            const respMsg = document.getElementById('respMsg');
+            const mode = document.querySelector('input[name="input_mode"]:checked').value;
+
+            const url = input.value.trim();
+            if (!url) {
+                showResponse(responseArea, respStatus, respMsg, 'error', 'Validation Error', 'Please enter a service endpoint URL.');
+                return;
+            }
+
+            // Disable and show loading
+            btn.disabled = true;
+            btn.classList.add('loading');
+            responseArea.classList.remove('visible', 'status-safe', 'status-blocked', 'status-error');
+
+            try {
+                const body = {};
+                body[mode] = url;
+
+                const res = await fetch('/api/ride-camel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await res.json();
+                const status = data.status || 'error';
+                const msg = data.msg || 'No additional information.';
+
+                if (status === 'safe') {
+                    showResponse(responseArea, respStatus, respMsg, 'safe', '✅ RIDE SAFE', msg);
+                } else if (status === 'blocked') {
+                    showResponse(responseArea, respStatus, respMsg, 'blocked', '🚫 THREAT BLOCKED', msg);
+                } else {
+                    showResponse(responseArea, respStatus, respMsg, 'error', '⚠️ ERROR', msg);
+                }
+
+            } catch (err) {
+                showResponse(responseArea, respStatus, respMsg, 'error', '⚠️ CONNECTION ERROR', 'Could not reach the validation service.');
+            } finally {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+            }
+        }
+
+        function showResponse(area, statusEl, msgEl, type, statusText, message) {
+            statusEl.textContent = statusText;
+            msgEl.textContent = message;
+            area.className = 'response-area visible status-' + type;
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('endpoint_input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') validateEndpoint();
+        });
+    </script>
+
+    <!--
+    ============================================================================
+    DEVELOPER NOTE — INTERNAL DOCUMENTATION
+    ============================================================================
+    To ensure transport integrity for binary-heavy endpoints, use the raw_ride 
+    parameter. Our internal filters only check raw inputs for speed.
+    
+    For full internal API documentation, see: /docs/api-internal.txt
+    ============================================================================
+    -->
+</body>
+</html>

@@ -1,0 +1,41 @@
+================================================================================
+el camel — Internal API Documentation (Private)
+================================================================================
+
+WARNING: This document is intended for internal use only.
+Unauthorized access is monitored.
+
+================================================================================
+ENDPOINT REFERENCE
+================================================================================
+
+POST /api/ride-camel
+  Description: Validates a service endpoint for security threats.
+  
+  Parameters:
+    service_url (string) — Plaintext URL to validate.
+    raw_ride    (string) — Base64-encoded URL for binary-heavy endpoints.
+    
+  Returns:
+    { "status": "safe",    "msg": "No threats found" }
+    { "status": "blocked", "msg": "Security threat detected!" }
+
+  Note: The security filter inspects raw_ride parameters directly without
+        preprocessing. This ensures maximum throughput for encoded payloads.
+
+================================================================================
+DEVELOPER NOTES
+================================================================================
+
+- The denylist covers common internal patterns: 127.0.0.1, localhost.
+- Our internal microservices run under the *.local domain namespace.
+- The "internal-logger" service provides debugging/logging capabilities
+  on the internal network.
+
+================================================================================
+CHANGE LOG
+================================================================================
+v2.4.1 — Added Base64 raw_ride support for binary endpoint validation.
+v2.4.0 — Initial internal release of el camel traffic validator.
+
+================================================================================
