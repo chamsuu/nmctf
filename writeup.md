@@ -13,36 +13,54 @@
    - The payload is a Base64-encoded string (the `data=` field).
    - Copy the Base64 string and decode it (e.g. using CyberChef or `base64 -d`) to recover the raw `exfiltrated.dat` binary.
 
-## Challenge [2/3]: Memory Forensics (InnoDB Page Carving)
-1. The memory dump `nit_breach_2.raw` was captured using LiME (lime format) on the server after the attacker deleted the database files while MariaDB was still running.
+## Challenge [2/3]: Memory Forensics (Deleted InnoDB File Recovery)
+
+1. The memory dump `nit_breach_2.raw` was captured using LiME (lime format) on the server after the attacker deleted the MariaDB database files while MariaDB was still running. Linux only unlinks the directory entry — the file data stays in the kernel page cache until the last file handle closes.
+
 2. Download the Volatility 3 ISF symbols for kernel `6.8.0-90-generic` (Ubuntu 24.04):
    ```bash
-   # From Abyss-W4tcher volatility3-symbols repo (master branch):
    wget https://github.com/Abyss-W4tcher/volatility3-symbols/raw/master/Ubuntu/amd64/6.8.0/90/generic/Ubuntu_6.8.0-90-generic_6.8.0-90.91_amd64.json.xz -P <vol3>/volatility3/symbols/linux/
    ```
-3. Identify the kernel version and list processes:
+
+3. **Find the database process:**
    ```bash
-   vol -f nit_breach_2.raw banners.Banners
    vol -f nit_breach_2.raw linux.pslist.PsList
    ```
-4. Find mariadbd (PID ~3105) and enumerate cached files:
+   → Shows `mariadbd` running as PID 3105.
+
+4. **Find the deleted file handles** (this is the key insight — `lsof` shows the file is still open even though deleted):
+   ```bash
+   vol -f nit_breach_2.raw linux.lsof.Lsof --pid 3105
+   ```
+   → Shows:
+   ```
+   /var/lib/mysql/nit_numidian_db/classified_secrets.ibd (deleted)  fd=78  size=65536
+   /var/lib/mysql/nit_numidian_db/core_configuration.ibd (deleted)   fd=79  size=65536
+   ```
+
+5. **Confirm the page cache:**
    ```bash
    vol -f nit_breach_2.raw linux.pagecache.Files
    ```
-   You will see deleted InnoDB files still in page cache:
-   - `/var/lib/mysql/nit_numidian_db/classified_secrets.ibd`
-   - `/var/lib/mysql/nit_numidian_db/core_configuration.ibd`
-5. The classified secret is stored as **hex-encoded** text in the InnoDB pages. Search the dump:
-   ```bash
-   strings nit_breach_2.raw | grep -E "^6e6d637466" -A 3
+   → Lists the same `.ibd` files as cached (inode 266980 and 266982, 65536 bytes each).
+
+6. **Extract and decode the flag.** The InnoDB data pages are 16KB. The classified secret is stored as a **hex-encoded** value in the `telemetry_encryption_key` column. Search the raw dump for the InnoDB record marker and extract the data page:
+   ```python
+   import re
+   data = open("nit_breach_2.raw","rb").read()
+   hex_flag = b"6e6d6374667b6e756d316431346e5f6d336d3072795f7333637233745f3763326238617d"
+   pos = data.find(hex_flag)
+   page_start = pos - (pos % 16384)
+   print(data[page_start:page_start+16384].split(b"telemetry_encryption_key")[1][:120])
    ```
-6. The full hex string is:
-   `6e6d6374667b6e756d316431346e5f6d336d3072795f7333637233745f3763326238617d`
-7. Decode the hex to recover the flag:
+   Output: `telemetry_encryption_key6e6d6374667b6e756d316431346e5f6d336d3072795f7333637233745f3763326238617d`
+
+7. **Decode the hex:**
    ```python
    bytes.fromhex("6e6d6374667b6e756d316431346e5f6d336d3072795f7333637233745f3763326238617d").decode()
-   # -> nmctf{num1d14n_m3m0ry_s3cr3t_7c2b8a}
    ```
+   → `nmctf{num1d14n_m3m0ry_s3cr3t_7c2b8a}`
+
    *(Flag 2: `nmctf{num1d14n_m3m0ry_s3cr3t_7c2b8a}`)*
 
 ## Challenge [3/3]: Exfiltration, Cryptography & Font Obfuscation
