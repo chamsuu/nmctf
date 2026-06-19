@@ -61,7 +61,7 @@ void plc_emergency_dump(void) {
             (void *)plc_emergency_dump);
 }
 
-__attribute__((naked, noinline))
+__attribute__((noinline, noreturn))
 void stack_pivot(uint64_t *chain) {
     (void)chain;
     asm volatile(
@@ -70,6 +70,7 @@ void stack_pivot(uint64_t *chain) {
         "ldp x0, x1, [sp], #16\n"
         "ret\n"
     );
+    __builtin_unreachable();
 }
 
 __attribute__((noinline))
