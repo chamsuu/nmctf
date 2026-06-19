@@ -2,12 +2,15 @@ CC     = gcc
 CFLAGS = -m32 -O1 -fno-pie -no-pie -fno-stack-protector \
          -Wl,-z,noexecstack -Wl,-z,relro
 
-.PHONY: all clean verify
+.PHONY: all clean verify dist
 
 all: build/pos
 
 build/pos: src/pos.c
 	$(CC) $(CFLAGS) -o $@ $<
+
+dist: build/pos
+	strip build/pos -o dist/pos
 
 verify: build/pos
 	@echo "[*] Security properties:"
@@ -18,4 +21,4 @@ verify: build/pos
 	nm build/pos | grep sys_maintenance
 
 clean:
-	rm -f build/pos
+	rm -f build/pos dist/pos
