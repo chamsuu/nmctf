@@ -1,8 +1,8 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
-        lib32gcc1 \
+        lib32gcc-s1 \
         libc6-i386 && \
     rm -rf /var/lib/apt/lists/*
 
