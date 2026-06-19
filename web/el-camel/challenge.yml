@@ -1,13 +1,12 @@
-name: "el camel"
+name: "el-camel"
 category: Web
 description: |
-  el camel is really good product, but now i developed it to something else !!!,
-  if you want a safe traffic, secure content, without any threats, relax and ride el camel.
-difficulty: intermediate
-author: chamsuu
+  actually i build with a team a tool that test everything and make a safe ride at anything , but one of the team built wanted to be creative and slopp an raw ride that have no meaning , so i kick him out, but his last words to me were: check /var/www/flag.txt
+difficulty: easy asf
+author: L_autor / denzeno
 type: static
 value: 500
-connection_info: http://localhost/
+connection_info: http://el-camel.web.vuln3ra.com/
 flag:
   nmctf{Th3_s4f3st_tr1p_1s_4lways_w1th_camel_!!!!}
 
