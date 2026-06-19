@@ -1,0 +1,18 @@
+name: easiest-challenge-in-your-entire-life
+author: koyphshi
+category: Crypto
+description: |-
+  this challenge is very easy, it is considered very easy, because this challenge is very easy a
+  generate big paragraph like this
+    This challenge is very easy, it is considered very easy, because this challenge is very easy and anyone can complete it without any real effort at all, this challenge is very easy, it is considered very easy, because this challenge is very easy and requires almost no thinking or preparation whatsoever, this challenge is very easy, it is considered very easy, because this challenge is very easy and even beginners find it straightforward from the very first step, this challenge is very easy, it is considered very easy, because this challenge is very easy and the solutions appear naturally without any struggle or complications, this challenge is very easy, it is considered very easy, because this challenge is very easy and people often finish it faster than they expect while wondering why it was hyped up in the first place, this challenge is very easy, it is considered very easy, because this challenge is very easy and every single part flows smoothly like a gentle stream on a calm day, this challenge is very easy, it is considered very easy, because this challenge is very easy and no advanced skills or special knowledge are needed to ace it completely, this challenge is very easy, it is considered very easy, because this challenge is very easy and the whole process feels like a relaxing walk in the park rather than any sort of test, this challenge is very easy, it is considered very easy, because this challenge is very easy and success comes quickly with minimal input, this challenge is very easy, it is considered very easy, because this challenge is very easy and it builds confidence instantly for everyone who tries it, this challenge is very easy, it is considered very easy, because this challenge is very easy and the answers reveal themselves almost automatically, this challenge is very easy, it is considered very easy, because this challenge is very easy and there is truly nothing to worry about or overthink here at all.
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{buy_me_a_coffee_pls_pls__}
+tags:
+  - crypto
+files:
+  - chall.py
+requirements: []
+
