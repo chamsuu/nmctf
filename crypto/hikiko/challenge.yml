@@ -1,0 +1,16 @@
+name: hikiko
+author: koyphshi
+category: Crypto
+description: |-
+  "A hikikomori is someone who has withdrawn from society, shut themselves inside their room, and stopped participating in the world. But here's what no one tells you about being a hikikomori: the walls you build around yourself don't keep the world out, they keep you in. Every day you spend hiding is another layer of armor that slowly becomes a cage. You tell yourself it's safer inside, that the outside world is too cruel, too loud, too overwhelming, and maybe you're right, maybe it is all of those things. But the silence of your room isn't peace, it's stagnation. The glow of your monitor at 3 AM isn't comfort, it's a life support machine for a life you're not living. Misaki once said that she wanted to save Satou, but the truth is, nobody can save you except yourself. The contract, the meetings on the park bench, the promise of a cure, they were never about fixing him. They were about giving him a reason to open the door, even if just a crack. And that's all it takes sometimes, one crack, one sliver of light, one moment where the fear of staying the same finally outweighs the fear of change. The NHK conspiracy isn't real, but the conspiracy you wage against yourself every single day, the one where you convince yourself that tomorrow will be different while doing nothing to make it so, that one is very real. So stop waiting for your Misaki. Stop waiting for someone to knock on your door and hand you a reason to live. The door handle is on your side. It always has been."
+value: 500
+type: standard
+state: visible
+flags:
+  - nmctf{no_coffee????_fuuuuuuuuuu}
+tags:
+  - crypto
+files:
+  - chall.py
+  - output.txt
+requirements: []
