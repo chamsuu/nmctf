@@ -1,0 +1,39 @@
+name: "v1b3P3nt3st1nG"
+category: Forensic
+description: |
+  Coco's Ubuntu workstation has been acting strange lately — weird network
+  connections, unfamiliar processes, and files she doesn't remember creating.
+  She reached out to us after noticing her machine was compromised.
+
+  We've acquired a forensic image of her system. Initial triage confirms an
+  attacker gained access and established persistence.
+
+  There's something else: the attacker didn't rely solely on traditional tools.
+  We suspect they used an unconventional platform directly on Coco's machine
+  to plan and execute parts of the attack — leaving behind a trail of
+  configuration files, session logs, and database artifacts.
+
+  Your mission: investigate the compromise, identify the attacker's methods,
+  and reconstruct exactly what happened — including what instructions the
+  attacker gave to their tool.
+
+  Connect to the question server to submit your findings. Answer all 12 questions
+  correctly to receive the flag. One wrong answer and the connection terminates.
+
+  Artifacts provided: coco_forensics.zip (forensic image of Coco's Ubuntu system)
+difficulty: HARD
+author: Ch1Hub
+type: static
+flag: nmctf{n0w_u_und3r574nd_0p3nc0d3_1nn3r_f1l35}
+tags:
+  - forensics
+  - sqlite
+  - dfir
+  - opencode
+  - mitre-attck
+  - persistence
+  - phishing
+  - privilege-escalation
+files:
+  - dist/coco_forensics.zip
+state: visible
