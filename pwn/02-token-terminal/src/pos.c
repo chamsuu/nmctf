@@ -3,8 +3,21 @@
 #include <string.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <errno.h>
+#include <poll.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+
+static ssize_t recv_all(int fd, void *buf, size_t n) {
+    size_t off = 0;
+    while (off < n) {
+        ssize_t r = recv(fd, (char*)buf + off, n - off, 0);
+        if (r <= 0) return off ? (ssize_t)off : r;
+        off += (size_t)r;
+    }
+    return (ssize_t)off;
+}
+
 /* ------------------------------------------------------------------ */
 /*  BSS target - refund metadata for stable implementation */
 struct __attribute__((aligned(8))) {
@@ -76,9 +89,9 @@ static void *safe_alloc(size_t n) {
 void cmd_set_metadata(int sockfd) {
     uint32_t prev, csz;
     send(sockfd, "reuse_tag      (4 bytes): ", 26, 0);
-    recv(sockfd, &prev, 4, 0);
+    recv_all(sockfd, &prev, 4);
     send(sockfd, "reuse_size     (4 bytes): ", 26, 0);
-    recv(sockfd, &csz,  4, 0);
+    recv_all(sockfd, &csz,  4);
     g_state.reuse_tag  = prev;
     g_state.reuse_size = csz;
     send(sockfd, "[POS] Metadata set.\n", 20, 0);
@@ -107,7 +120,7 @@ void cmd_set_metadata(int sockfd) {
 void cmd_process_order(int sockfd) {
     uint16_t quantity = 0;
     send(sockfd, "Quantity (2 bytes LE): ", 23, 0);
-    recv(sockfd, &quantity, 2, 0);
+    recv_all(sockfd, &quantity, 2);
 
     uint16_t alloc_size = (uint16_t)((uint32_t)quantity * 40u);
     if (!alloc_size) { send(sockfd,"[-] Bad qty.\n",13,0); return; }
@@ -161,7 +174,7 @@ void cmd_delete_record(int sockfd) {
 void cmd_claim_refund(int sockfd) {
     uint32_t sz;
     send(sockfd, "Refund size (4 bytes): ", 23, 0);
-    recv(sockfd, &sz, 4, 0);
+    recv_all(sockfd, &sz, 4);
 
     void *p = safe_alloc((size_t)sz);
     if (!p) return;
@@ -169,7 +182,7 @@ void cmd_claim_refund(int sockfd) {
     char info[48];
     int  n = snprintf(info, sizeof(info), "[POS] Chunk @ %p. Data: ", p);
     send(sockfd, info, n, 0);
-    recv(sockfd, p, (size_t)sz, 0);
+    recv_all(sockfd, p, (size_t)sz);
     send(sockfd, "\n[POS] Done.\n", 13, 0);
 }
 
@@ -226,7 +239,7 @@ void handle_connection(int sockfd) {
 
     while (1) {
         char c[4] = {0};
-        if (recv(sockfd, c, 1, 0) <= 0) break;
+        if (recv_all(sockfd, c, 1) <= 0) break;
         switch (c[0]) {
             case '1': cmd_set_metadata(sockfd);   break;
             case '2': cmd_process_order(sockfd);  break;
