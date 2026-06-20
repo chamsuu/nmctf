@@ -1,4 +1,4 @@
-# The Forgotten Score — writeup
+# Music to My Ears — writeup
 
 A reversing challenge where the program itself is hidden inside a music
 file. The player must:
@@ -160,7 +160,7 @@ XOR with the 8-byte key `0x000000000010c737` (LE bytes: `37 c7 10 00
 key = 0x10c737
 kb = key.to_bytes(8, "little")  # 37 c7 10 00 00 00 00 00
 flag = bytes([b ^ kb[i % 8] for i, b in enumerate(enc_flag)])
-# => b"nmctf{m3l0dy_0f_th3_f0rg0tt3n_sc0r3}"
+# => b"nmctf{l0st_m3l0dy_f0r_th3_f0rg0tt3n}"
 ```
 
 Try the decoy key against the same `enc_flag` and you get garbage.
@@ -215,7 +215,7 @@ chall3/
   README.md                - challenge overview and hints
   WRITEUP.md               - this file
   handout/
-    forgotten_score.wav    - the music-encoded binary
+    music_to_my_ears.wav    - the music-encoded binary
   challenge/               - source for the reversing binary
     chall.c
     build_flag.py

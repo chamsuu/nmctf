@@ -1,4 +1,4 @@
-# The Forgotten Score
+# Music to My Ears
 
 **Category:** Reverse Engineering
 **Difficulty:** Medium-Hard
@@ -21,7 +21,7 @@ flag is never printed by the binary itself.
 
 ## Files (handout)
 
-- `forgotten_score.wav` — the music-encoded binary
+- `music_to_my_ears.wav` — the music-encoded binary
 
 ## Hints (in increasing order of obviousness)
 
@@ -54,7 +54,7 @@ flag is never printed by the binary itself.
    - Decoy: `sum("GFEDCBAG") * 2025 = 547 * 2025 = 0x10e6db`
 4. **XOR-decrypt** each encrypted array with the corresponding key.
    The one that starts with `nmctf{` is the real flag.
-5. The flag is `nmctf{m3l0dy_0f_th3_f0rg0tt3n_sc0r3}`.
+5. The flag is `nmctf{l0st_m3l0dy_f0r_th3_f0rg0tt3n}`.
 
 ## Files in this directory
 
@@ -63,7 +63,7 @@ chall3/
   description            - the original challenge description
   README.md              - this file
   handout/
-    forgotten_score.wav  - the music-encoded binary (the challenge)
+    music_to_my_ears.wav  - the music-encoded binary (the challenge)
   challenge/             - the source for the reversing binary
     chall.c
     build_flag.py

@@ -14,7 +14,7 @@ Decoy:  same Roman offset but with a different melody (descending scale)
         -> wrong key -> "nmctf{n0_m3l0dy_n0_m3ss4g3}"
 """
 
-FLAG     = b"nmctf{m3l0dy_0f_th3_f0rg0tt3n_sc0r3}"
+FLAG     = b"nmctf{l0st_m3l0dy_f0r_th3_f0rg0tt3n}"
 FAKE_FLAG = b"nmctf{n0_m3l0dy_n0_m3ss4g3}"
 
 # Real melody: ascending C major scale then a leading tone back to C

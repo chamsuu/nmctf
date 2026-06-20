@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Full solve script for "The Forgotten Score" (chall3).
+Full solve script for "Music to My Ears" (chall3).
 
 Given a WAV file containing the music-encoded temporal_vault binary, this
 script:
@@ -20,8 +20,11 @@ import subprocess
 
 def step_decode(wav_path: str) -> str:
     out = wav_path.replace(".wav", ".decoded")
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    wav2bin = os.path.join(script_dir, "wav2bin.py")
     r = subprocess.run(
-        ["python3", "src/wav2bin.py", wav_path, out],
+        ["python3", wav2bin, wav_path, out],
         capture_output=True, text=True
     )
     if r.returncode != 0:
@@ -80,13 +83,19 @@ def find_melody_candidates(data):
     return candidates
 
 def find_enc_flag_offset(data, key):
-    """Find the byte offset where 36 bytes XORed with the 8-byte key give 'nmctf{' prefix."""
+    """Find the byte offset where bytes XORed with the 8-byte key give 'nmctf{' prefix.
+    Returns (offset, length) or (-1, 0)."""
     kb = key.to_bytes(8, "little")
     expected_prefix = b"nmctf{"
-    for off in range(len(data) - 36):
+    for off in range(len(data) - 10):
         if all((data[off + i] ^ kb[i]) == expected_prefix[i] for i in range(5)):
-            return off
-    return -1
+            # scan forward to find end of flag ('}' after decryption)
+            for length in range(10, 128):
+                if off + length > len(data):
+                    break
+                if (data[off + length - 1] ^ kb[(length - 1) % 8]) == ord('}'):
+                    return off, length
+    return -1, 0
 
 def main():
     if len(sys.argv) != 2:
@@ -118,23 +127,27 @@ def main():
         print(f"    offset 0x{off:04x}: {m!r}  (sum = {s})")
 
     print("\n== Step 5: try each melody as the key, look for the flag ==")
+    best = None
     for off, melody in cands:
         note_sum = sum(ord(c) for c in melody)
         key = (note_sum * tempo_val) & 0xFFFFFFFFFFFFFFFF
-        enc_off = find_enc_flag_offset(data, key)
+        enc_off, enc_len = find_enc_flag_offset(data, key)
         if enc_off >= 0:
-            enc = data[enc_off:enc_off + 36]
+            enc = data[enc_off:enc_off + enc_len]
             kb = key.to_bytes(8, "little")
             flag = bytes([b ^ kb[i % 8] for i, b in enumerate(enc)])
             try:
                 flag_s = flag.decode()
             except UnicodeDecodeError:
                 continue
-            if flag_s.startswith("nmctf{"):
-                print(f"    [+] Using melody {melody!r} (key=0x{key:016x})")
-                print(f"    [+] enc_flag at offset 0x{enc_off:x}")
-                print(f"\n== FLAG: {flag_s} ==")
-                return
+            if flag_s.startswith("nmctf{") and (best is None or enc_len > best[2]):
+                best = (melody, key, enc_len, enc_off, flag_s)
+                print(f"    [*] Melody {melody!r} (key=0x{key:016x}) -> {flag_s!r}")
+    if best:
+        melody, key, enc_len, enc_off, flag_s = best
+        print(f"\n    [+] Best: melody {melody!r} at offset 0x{enc_off:x}, length {enc_len}")
+        print(f"\n== FLAG: {flag_s} ==")
+        return
     print("    No candidate produced a valid flag.", file=sys.stderr)
     sys.exit(1)
 
