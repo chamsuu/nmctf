@@ -1,0 +1,12 @@
+name: Scanai
+author: H4t3m
+category: web
+description: |
+  our Penter take a holidday and before he go he custom tool to test our local applications
+
+host:  http://scanai.extra.vuln3ra.com/
+flag:  nmctf{Oops_i_try_Custom_This_tool_But_Better_use_current_version_that_very_Said}}
+tags:
+  - web
+files: hidden
+requirements: []

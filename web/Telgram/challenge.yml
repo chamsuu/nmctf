@@ -9,4 +9,6 @@ host:  http://telgram.extra.vuln3ra.com/
 flag: nmctf{W3_T3ll_T0_Us3_Y0ur_3m41l_Bu7_7h47_1d_N33d_T0_B3_53cr37}
 tags:
   - web
-files: hidden
+files: 
+- dist/app.py
+requirements: []

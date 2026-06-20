@@ -1,0 +1,15 @@
+name: jail2
+author: H4t3m
+category: misc
+description: |
+  stdout is closed, builtins are stripped, and only SystemExit is caught.
+  Can you still read the flag?
+
+  `nc jail.extra.vuln3ra.com 13337`
+flag: nmctf{I_think_now_it_not_be_super_Jail}
+files:
+  - dist/jail2.zip
+tags:
+  - python
+  - jail
+  - misc
