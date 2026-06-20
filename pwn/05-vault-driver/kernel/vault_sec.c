@@ -68,7 +68,7 @@ check:
 static int vault_proc_show(struct seq_file *m, void *v)
 {
     seq_printf(m, "Vault Security Module v1.0\n");
-    seq_printf(m, "Module base:    %pK\n", THIS_MODULE->core_layout.base);
+    seq_printf(m, "Module base:    %pK\n", THIS_MODULE->mem[MOD_TEXT].base);
     seq_printf(m, "State addr:     %pK\n", &g_vault_state);
     seq_printf(m, "Staging addr:   %pK\n", g_vault_staging);
     seq_printf(m, "Status: %s\n", g_vault_state.locked ? "LOCKED" : "OPEN");

@@ -12,5 +12,4 @@ echo "[*] vault_sec loaded"
 echo "[*] PixelVault Kernel Challenge"
 echo "[*] Goal: Escalate to root, read /flag.txt"
 
-setsid /bin/sh -c 'exec /bin/sh </dev/ttyS0 >/dev/ttyS0 2>&1' &
-exec /bin/sh
+exec setsid /bin/sh -c 'exec /bin/sh </dev/ttyS0 >/dev/ttyS0 2>&1'

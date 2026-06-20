@@ -15,6 +15,8 @@ COPY qemu/run.sh /challenge/run.sh
 COPY flag.txt /flag.txt
 RUN chmod +x /challenge/run.sh
 
+WORKDIR /challenge
+
 EXPOSE 1337
 
 CMD ["socat", \

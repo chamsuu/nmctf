@@ -1,0 +1,1 @@
+savedcmd_vault_sec.ko := ld -r -m elf_x86_64 --fatal-warnings -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T /tmp/opencode/linux-6.18.9/scripts/module.lds -o vault_sec.ko vault_sec.o vault_sec.mod.o .module-common.o
