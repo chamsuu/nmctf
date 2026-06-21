@@ -27,6 +27,9 @@ cp "$SCRIPT_DIR/../dist/vault_sec.ko" "$SCRIPT_DIR/files/"
 # Create flag file
 echo "nmctf{K3RN3L_R4C3_CR3D_0V3RW173}" > "$SCRIPT_DIR/files/flag.txt"
 
+# Ensure no exploit binary leaks into the player dist
+rm -f "$SCRIPT_DIR/files/exploit"
+
 # Create cpio archive
 cd "$SCRIPT_DIR/files"
 find . | cpio -o -H newc | gzip > "$SCRIPT_DIR/../dist/rootfs.cpio.gz"
