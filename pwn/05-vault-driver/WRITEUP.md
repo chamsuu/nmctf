@@ -1,138 +1,109 @@
-# Challenge 05: Security Vault Driver - Writeup
+# Vault Driver — Kernel Double-Fetch Race, Data-Only Cred Overwrite
 
-## Intro
-The "Vault Driver" challenge was the final pwn task of the series, categorized as **Hard**. It takes us into the Linux kernel, specifically targeting a custom character device with a classic yet powerful flaw. Unlike userspace challenges, the kernel environment requires a deeper understanding of memory layout and identity management.
+this is the capstone kernel challenge, and honestly when we first saw the `vault_sec.ko` kernel module and the QEMU boot script, we felt that jolt of panic that comes with kernel exploitation. wrong crash means a kernel panic. the constraints are brutal. but after getting the environment booted and poking around, it turned out to be one of the most satisfying challenges in the track.
 
-## Environment
-The challenge runs on a modern Linux kernel with full protections enabled:
-```bash
-/ $ cat /proc/version
+the first thing we do inside the QEMU VM is inventory the environment:
+
+```
+/ # cat /proc/version
 Linux version 6.18.9 (gcc (GCC) 13.2.0) #1 SMP PREEMPT_DYNAMIC
-/ $ lsmod
+
+/ # cat /proc/cpuinfo | grep flags
+... smep smap ...
+
+/ # cat /proc/sys/kernel/kptr_restrict
+0
+
+/ # lsmod
 vault_sec 16384 0 - Live 0xffffffffc0000000 (O)
 ```
 
-**Protections:**
-- **SMEP** (Supervisor Mode Execution Prevention): Enabled
-- **SMAP** (Supervisor Mode Access Prevention): Enabled
-- **KASLR** (Kernel Address Space Layout Randomization): Enabled
-- **KPTI** (Kernel Page Table Isolation): Enabled
+kptr_restrict is zero — that's a huge relief. it means `/proc/kallsyms` and `/sys/module/*/sections/*` are readable and contain real kernel addresses. no information leak exploit needed — the kernel just tells us where everything is. we can read the module base with a simple `fopen("/sys/module/vault_sec/sections/.text", "r")`.
 
-## Module Analysis
-The `vault_sec` module provides a secure "staging" area for sensitive data. It uses a `seqlock` to purportedly protect global state and allows users to submit data through an IOCTL interface.
+the mitigations are all active: SMEP prevents the kernel from executing userspace code. SMAP prevents the kernel from even *reading* userspace memory in kernel mode (without special instructions). KASLR randomizes the kernel base (but kptr_restrict=0 neuters this for the module). KPTI isolates kernel page tables, so even if we hijack control flow, we can't return to userspace without a trampoline.
+
+the module registers a misc device at `/dev/vault_sec` and a proc file at `/proc/vault_status`. the IOCTL handler in `vault_ioctl` implements a "secure staging" feature — you submit a `struct vault_request` with a `door_id` and `data_len`, and the kernel copies that many bytes into a 256-byte global buffer:
 
 ```c
-struct vault_request {
-    uint32_t door_id;
-    uint32_t data_len;
-};
-
-#define VAULT_IOC_MAGIC  'V'
-#define VAULT_IOC_ACCESS _IOWR(VAULT_IOC_MAGIC, 1, struct vault_request)
+static uint8_t g_vault_staging[256];  // the target buffer
 ```
 
-## Vulnerability: Double-Fetch
-The vulnerability is a classic **Double-Fetch** (TOCTOU) race condition in the `vault_ioctl` handler.
+the handler uses a seqlock pattern that looks like it's trying to be thread-safe, but actually it's the vulnerability:
 
 ```c
 static long vault_ioctl(struct file *f, unsigned int cmd, unsigned long arg) {
-    ...
-    // [A] FIRST FETCH: Validate data_len
-    unsigned int seq = read_seqbegin(&vault_seqlock);
-    if (get_user(validated_len, &ureq->data_len))
-        return -EFAULT;
-    
-    // [B] CHECK: Ensure length is within bounds (256 bytes)
-    if (validated_len > sizeof(g_vault_staging))
+    struct vault_request __user *ureq = (void __user *)arg;
+
+    // [A] FIRST FETCH: read data_len from userspace and validate
+    uint32_t validated_len = 0;
+    get_user(validated_len, &ureq->data_len);
+    if (validated_len > sizeof(g_vault_staging))   // max 256
         return -EINVAL;
 
-    // [C] RACE WINDOW: Deliberate sleep creates a massive window (100ms)
+    // [B] RACE WINDOW: deliberate 80-120ms sleep
     usleep_range(80000, 120000);
 
-    // [D] SECOND FETCH: Re-reads the structure from user space
+    // [C] SECOND FETCH: re-read the ENTIRE struct from userspace
     struct vault_request req;
-    if (copy_from_user(&req, ureq, sizeof(req)))
-        return -EFAULT;
+    copy_from_user(&req, ureq, sizeof(req));
 
-    // [E] OVERFLOW: Uses req.data_len which may have changed!
-    if (copy_from_user(g_vault_staging, (uint8_t __user *)arg + sizeof(req), req.data_len))
-        return -EFAULT;
-    ...
+    // [D] OVERFLOW: uses req.data_len — which may have changed!
+    copy_from_user(g_vault_staging,
+                   (uint8_t __user *)arg + sizeof(req), req.data_len);
 }
 ```
 
-Wait! At **[A]**, the length is validated. But at **[C]**, the kernel sleeps, allowing a malicious thread to flip the length in userspace. When the kernel wakes up and performs the second fetch at **[D]**, it uses the new (huge) length to overflow the static BSS buffer `g_vault_staging` at **[E]**.
+the pattern is a classic TOCTOU (time-of-check, time-of-use) double fetch. at **[A]** the kernel reads `data_len` from userspace into a local variable and checks it. at **[B]** it sleeps for up to 100ms — an eternity in CPU time. during that sleep, a racing thread in userspace can change `data_len` from a safe value (like 64) to a malicious value (like `0x4000`). when the kernel wakes up, it re-reads the *entire struct* at **[C]**, getting the attacker's modified `data_len`. then it uses that length at **[D]** to copy way more than 256 bytes into `g_vault_staging`.
 
-## Information Leak
-Bypassing KASLR is trivial here because the module provides a diagnostic `/proc/vault_status` interface. Since `kptr_restrict` is disabled, we can leak the absolute addresses of the module and the staging buffer.
+100ms is huge for a race window. on a typical CTF VM with a couple cores, the race is trivially winnable — we don't need nanosecond-precise timing or cache-based side channels. a simple pair of threads, one flipping the value and the other calling `ioctl` in a loop, wins within a handful of attempts.
 
-```bash
-/ $ cat /proc/vault_status
-Vault Security Module v1.0
-Module base:    0xffffffffc0000000
-Staging addr:   0xffffffffc00021a0
-Status: LOCKED
+so we have a kernel heap overflow off a BSS buffer. what do we overwrite? SMEP and SMAP make control-flow hijacking unattractive — we'd need a kernel ROP chain, which requires knowing the kernel image base (doable via kallsyms) and finding gadgets (tedious but possible). but there's an easier path: **data-only attack**.
+
+the kernel heap behind `g_vault_staging` contains slab allocations. one of the most common slab objects is `struct cred` — the credential structure that holds each process's effective UID, GID, supplementary groups, and capabilities. in this kernel, `struct cred` is 192 bytes, living in the `kmalloc-192` slab cache. the relevant fields:
+
+```
+offset 0x00: usage (atomic_t, 4 bytes)  — kernel refcount; must be ≥ 1
+offset 0x04: uid   (kuid_t, 4 bytes)    — real user ID
+offset 0x08: gid   (kgid_t, 4 bytes)    — real group ID
+offset 0x0C: suid, sgid, euid, egid...  — saved/cached copies
 ```
 
-## Exploitation: Data-Only Attack
-Since **SMEP/SMAP/KPTI** are all active, hijacking the control flow (RIP) to run a ROP chain is cumbersome. Instead, we perform a **Data-Only** attack by targeting the **`struct cred`** of a process.
+if we overwrite `uid` and `gid` to 0 while keeping `usage` at 1, the process becomes root. the `usage` field is critical — glibc/kernel use it for reference counting, and if it drops to 0, the kernel frees the cred struct, causing a use-after-free panic.
 
-### 1. Cred Spray
-We fork 512 child processes. In Linux, each process has a credential structure (`struct cred`) in the kernel heap. These structures contain the UID and GID. In this kernel, they are allocated in the `kmalloc-192` bin.
-
-### 2. Winning the Race
-We use a thread to flip the `data_len` from `64` to `0x4000` while the `ioctl` is in the `usleep` window. 
-
-### 3. Overwriting Identity
-The overflow "bleeds" from the module's BSS into the heap, saturating the memory with our payload. We target the `uid`/`gid` offsets (at +4) and set them to `0` (root).
+but we don't know exactly where the cred structs are relative to `g_vault_staging`. the kernel heap layout depends on allocation order, slab coloring, and random state. so we **spray**: fork hundreds of child processes, each getting its own `struct cred` allocated from `kmalloc-192`. after 512 forks, the heap is densely packed with cred structs near our buffer:
 
 ```c
-// Payload pattern for kmalloc-192 (192 bytes)
-for (size_t off = 0; off < 0x4000; off += 192) {
-    *(uint32_t *)(payload + off + 0x00) = 1; // Usage count
-    *(uint32_t *)(payload + off + 0x04) = 0; // UID (root)
-    *(uint32_t *)(payload + off + 0x08) = 0; // GID (root)
-}
-```
-
-## Exploit Code (Summary)
-The exploit implements the multithreaded race and the cred spray. It then monitors `/proc/[pid]/status` to find the child that successfully became root.
-
-```c
-// [Selected logic from exploit.c]
-void *flip_thread(void *arg) {
-    while (!g_race_won) {
-        g_ureq.data_len = 0x4000; // Large size
-        usleep(100);
-        g_ureq.data_len = 64;     // Reset
+for (int i = 0; i < 512; i++) {
+    pid_t pid = fork();
+    if (pid == 0) {
+        pause();  // child waits for signal
     }
 }
 ```
 
-## Outro
-This challenge was a great lesson in why **Double Fetches** are so dangerous and why **Data-Only** attacks are the most robust way to bypass modern kernel mitigations. 
+each child sits in `pause()`, holding its cred struct alive in the heap. now we race: the parent thread toggles `data_len` from 64 to `0x4000` in a timing loop, while the main thread calls `ioctl` repeatedly. each time the race wins, the kernel copies our 16KB payload over the BSS buffer and into the heap beyond.
 
----
+our payload is a repeating 192-byte pattern:
 
-## Appendix: Loading the Exploit onto the Target
-
-### Method A: Base64 Transfer (Fastest)
-1. **On Host**: `base64 -w0 exploit_static > exploit.b64`
-2. **In QEMU**:
-```bash
-~ # cat <<EOF > exploit.b64
-[PASTE_BASE64_STRING_HERE]
-EOF
-~ # base64 -d exploit.b64 > /tmp/exploit
-~ # chmod +x /tmp/exploit
-~ # /tmp/exploit
+```c
+for (size_t off = 0; off < 0x4000; off += 0xC0) {
+    *(uint32_t *)(payload + off + 0x00) = 1;   // usage = 1  (keeps cred alive)
+    *(uint32_t *)(payload + off + 0x04) = 0;   // uid   = 0  (root)
+    *(uint32_t *)(payload + off + 0x08) = 0;   // gid   = 0  (root)
+    // offsets 0x0C through 0xBF are zeroed by memset
+}
 ```
 
-### Method B: Manual RootFS Repack (Stable)
-1. **Unpack**: `mkdir tmp; cd tmp; zcat ../rootfs.cpio.gz | cpio -idmv`
-2. **Add**: `cp ../exploit_static ./exploit && chmod +x exploit`
-3. **Repack**: `find . | cpio -o -H newc | gzip > ../rootfs.cpio.gz`
-4. **Run**: Boot with `./run.sh` and execute `./exploit`.
+the 192-byte stride means every `kmalloc-192` slot in the overflow path gets its uid/gid zeroed and its usage set to a valid value. most of these slots will be cred structs (thanks to the spray), and a few might be other slab objects — the usage=1 pattern is harmless for those.
 
-## Flag
-`nmctf{K3RN3L_R4C3_CR3D_0V3RW173}`
+after each race attempt, we scan `/proc/<pid>/status` for all the children. when we see:
+
+```
+Uid:    0       0       0       0
+```
+
+we know that child's cred has been overwritten. we send it `SIGUSR1`, it wakes up from `pause()`, calls `execve("/bin/busybox", "cat", "/flag.txt")` — as root — and prints the flag.
+
+the key insight: we don't need code execution. SMEP and SMAP both protect the CPU's instruction fetch and memory access pipelines, but they don't protect *data*. credentials are just integers in memory. overwrite the right integers and the kernel treats your process as root. it's the same principle as the classic `commit_creds(prepare_kernel_cred(NULL))` but without needing to call any kernel functions — we modify the cred directly via the heap overflow.
+
+this challenge is a solid introduction to kernel exploitation without requiring ROP chains or `ret2usr` trampolines. it teaches the double-fetch pattern, the importance of `/proc` and `/sys` for ASLR bypass in kernel CTFs, the slab allocator's fixed-size bins, and the elegance of data-only attacks when control-flow mitigations are present. the 100ms race window makes it winnable without hardware-specific timing primitives, keeping the difficulty accessible while still feeling like "real" kernel exploitation.
